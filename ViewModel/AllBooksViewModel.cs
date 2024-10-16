@@ -121,7 +121,7 @@ namespace EPubReader.ViewModel
 
         private void SaveJson(string jsonPath)
         {
-            string json = JsonConvert.SerializeObject(Books);
+            string json = JsonConvert.SerializeObject(Books, Formatting.Indented);
             File.WriteAllText(jsonPath, json);
         }
 
