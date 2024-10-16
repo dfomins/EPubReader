@@ -7,16 +7,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Book Details" FontSize="20" FontWeight="Bold" Margin="10"/>
-        <StackPanel Margin="10,40,10,10">
-            <TextBlock Text="Title:" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Title}" Margin="0,0,0,10"/>
+        <StackPanel Margin="10">
+            <Label HorizontalContentAlignment="Center">
+                <TextBlock Text="{Binding Title}" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
+            </Label>
+            <TextBlock Text="{Binding Path, StringFormat='Path: {0}'}" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
-            <TextBlock Text="Path:" FontWeight="Bold"/>
-            <TextBlock Text="{Binding Path}" Margin="0,0,0,10"/>
-
-            <TextBlock Text="Added Date:" FontWeight="Bold"/>
-            <TextBlock Text="{Binding AddingDate}" Margin="0,0,0,10"/>
+            <TextBlock Text="{Binding AddingDate, StringFormat='Addition date: {0}'}" TextWrapping="Wrap" Margin="0,0,0,10"/>
         </StackPanel>
     </Grid>
 </UserControl>

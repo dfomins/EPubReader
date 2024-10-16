@@ -76,8 +76,12 @@ namespace EPubReader.ViewModel
 
         private void OpenBook(object obj)
         {
-            BookWindow bookWindow = new BookWindow();
-            bookWindow.Show();
+            Book selectedBook = (Book)obj;
+            if (selectedBook != null)
+            {
+                BookWindow bookWindow = new BookWindow(selectedBook);
+                bookWindow.ShowDialog();
+            }
         }
 
         private bool CanDeleteBook(object obj)
@@ -87,7 +91,12 @@ namespace EPubReader.ViewModel
 
         private void DeleteBook(object obj)
         {
-            MessageBox.Show(obj.ToString());
+            Book selectedBook = (Book)obj;
+            if(selectedBook != null )
+            {
+                Books.Remove(selectedBook);
+                MessageBox.Show($"Book '{selectedBook.Title}' deleted.");
+            }
         }
 
         private void AddBookToJson(ObservableCollection<Book> Books, EpubBook book, string bookPath)

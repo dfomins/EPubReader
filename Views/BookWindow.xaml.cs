@@ -36,9 +36,10 @@ namespace EPubReader.Views
             }
         }
 
-        public BookWindow()
+        public BookWindow(Book bookToRead)
         {
             InitializeComponent();
+            Book = bookToRead;
         }
 
         private void GetAllChapters()

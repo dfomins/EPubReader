@@ -19,20 +19,23 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListBox ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" Cursor="Hand">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Label Height="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" FontSize="16" Content="{Binding Title}">
-                                    <Label.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="1" Command=""/>
-                                        </ContextMenu>
-                                    </Label.ContextMenu>
-                                </Label>
-                                <!--<TextBlock Height="40" VerticalAlignment="Center" FontSize="20" Text="{Binding Title}"/>-->
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <!--<StackPanel>-->
+                    <Grid>
+                        <ListBox Name="booksListBox" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
+                                        <Label.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Delete book" Click="DeleteBooks_Click" />
+                                            </ContextMenu>
+                                        </Label.ContextMenu>
+                                    </Label>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <!--</StackPanel>-->
                 </ScrollViewer>
                 <views:BookInfo Grid.Column="1" DataContext="{Binding SelectedBook}"/>
             </Grid>

@@ -1,4 +1,5 @@
-﻿using EPubReader.ViewModel;
+﻿using EPubReader.Models;
+using EPubReader.ViewModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -17,9 +18,34 @@ namespace EPubReader.Views
             this.DataContext = booksViewModel;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void DeleteBooks_Click(object sender, RoutedEventArgs e)
         {
+            var model = (AllBooksViewModel)DataContext;
 
+            var selectedBook = (Book)booksListBox.SelectedItem;
+
+            if (selectedBook != null)
+            {
+                if (model.DeleteBookCommand.CanExecute(selectedBook))
+                {
+                    model.DeleteBookCommand.Execute(selectedBook);
+                }
+            }
+        }
+
+        private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = (AllBooksViewModel)DataContext;
+             
+            var selectedBook = (Book)booksListBox.SelectedItem;
+
+            if (selectedBook != null)
+            {
+                if (model.OpenBookCommand.CanExecute(selectedBook))
+                {
+                    model.OpenBookCommand.Execute(selectedBook);
+                }
+            }
         }
     }
 }

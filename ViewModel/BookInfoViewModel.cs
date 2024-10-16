@@ -19,7 +19,6 @@ namespace EPubReader.ViewModel
             {
                 _currentBook = value;
                 OnPropertyChanged(nameof(CurrentBook));
-                // Любая логика, которая должна выполниться при изменении книги
             }
         }
 
