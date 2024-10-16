@@ -1,21 +1,25 @@
-﻿using Microsoft.Win32;
-using Newtonsoft.Json;
-using System.IO;
+﻿using EPubReader.ViewModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
-using VersOne.Epub;
-using EPubReader.Models;
 
 namespace EPubReader.Views
 {
     /// <summary>
     /// Interaction logic for AllBooks.xaml
     /// </summary>
-    public partial class AllBooks : UserControl
+    public partial class AllBooks : Window
     {
         public AllBooks()
         {
             InitializeComponent();
+            AllBooksViewModel booksViewModel = new AllBooksViewModel();
+            this.DataContext = booksViewModel;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
-        Title="BookWindow" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="800">
     <DockPanel>
         <ComboBox Grid.Column="1" Name="chaptersList" Text="Chapters list" Focusable="False" IsEditable="True" IsReadOnly="True" DockPanel.Dock="Top" />
         <TextBox DockPanel.Dock="Bottom" IsReadOnly="True">
