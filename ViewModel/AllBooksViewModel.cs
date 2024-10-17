@@ -92,10 +92,12 @@ namespace EPubReader.ViewModel
         private void DeleteBook(object obj)
         {
             Book selectedBook = (Book)obj;
-            if(selectedBook != null )
-            {
-                Books.Remove(selectedBook);
-                MessageBox.Show($"Book '{selectedBook.Title}' deleted.");
+            if(MessageBox.Show("Are you sure you want to delete this book?", "Deletion confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                if (selectedBook != null)
+                {
+                    Books.Remove(selectedBook);
+                    MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted");
+                }
             }
         }
 

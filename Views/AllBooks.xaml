@@ -6,9 +6,13 @@
         xmlns:local="clr-namespace:EPubReader.Views"
         xmlns:views="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
-        Title="AllBooks" MinHeight="400" Height="450" MinWidth="700" Width="800">
+        Title="EPubReader" MinHeight="400" Height="450" MinWidth="700" Width="800">
     <Grid>
-        <DockPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="29*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Cursor="Hand" Header="Load book" Command="{Binding AddNewBookCommand}"></MenuItem>
             </Menu>
