@@ -1,2 +1,2 @@
 # EPubReader
-## WPF kursa darbs ITIA 2. kurss
+## ITIA 2. kurss WPF kursa darbs
