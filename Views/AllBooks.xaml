@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
         <DockPanel Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Cursor="Hand" Header="Load book" Command="{Binding AddNewBookCommand}"></MenuItem>
+                <MenuItem Cursor="Hand" Header="Load book" Command="{Binding AddNewBookCommand}"/>
             </Menu>
             <TextBox Name="NumberOfBooks" DockPanel.Dock="Bottom" Text="{Binding BookCounter, Mode=OneWay, StringFormat='Number of books: {0}'}" IsReadOnly="True"></TextBox>
             <Grid>

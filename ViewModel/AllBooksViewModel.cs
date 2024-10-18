@@ -20,16 +20,7 @@ namespace EPubReader.ViewModel
     {
         public ObservableCollection<Book> Books { get; set; }
 
-        private Book _selectedBook;
-        
-        public Book SelectedBook
-        {
-            get => _selectedBook;
-            set
-            {
-                _selectedBook = value;
-            }
-        }
+        public Book SelectedBook { get; set; }
 
         public int BookCounter
         {
@@ -41,6 +32,8 @@ namespace EPubReader.ViewModel
         public ICommand OpenBookCommand { get; set; }
 
         public ICommand DeleteBookCommand { get; set; }
+
+
 
         public AllBooksViewModel()
         {
@@ -96,7 +89,14 @@ namespace EPubReader.ViewModel
                 if (selectedBook != null)
                 {
                     Books.Remove(selectedBook);
+                    SaveJson("books.json");
                     MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted");
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    if (File.Exists($"book-covers/{selectedBook.Id}.png"))
+                    {
+                        File.Delete($"book-covers/{selectedBook.Id}.png");
+                    }
                 }
             }
         }
@@ -107,6 +107,7 @@ namespace EPubReader.ViewModel
             {
                 Id = Books.Count > 0 ? Books[Books.Count - 1].Id + 1 : 1,
                 Title = book.Title,
+                Description = book.Description,
                 Path = bookPath,
                 AddingDate = DateTime.Now.ToString("dd/MM/yyyy")
             };
@@ -115,10 +116,12 @@ namespace EPubReader.ViewModel
             SaveJson("books.json");
 
             if (!Directory.Exists("book-covers"))
-                System.IO.Directory.CreateDirectory("book-covers");
+                Directory.CreateDirectory("book-covers");
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             if (book.CoverImage != null)
-                File.WriteAllBytes($"book-covers/{newBook.Id}.jpg", book.CoverImage);
+                File.WriteAllBytes($"book-covers/{newBook.Id}.png", book.CoverImage);
         }
 
         private void SaveJson(string jsonPath)
@@ -135,6 +138,5 @@ namespace EPubReader.ViewModel
                 Books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(json);
             }
         }
-
     }
 }

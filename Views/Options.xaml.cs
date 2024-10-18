@@ -1,5 +1,4 @@
-﻿using EPubReader.Models;
-using EPubReader.ViewModel;
+﻿using EPubReader.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +12,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using VersOne.Epub;
 
 namespace EPubReader.Views
 {
     /// <summary>
-    /// Interaction logic for BookWindow.xaml
+    /// Interaction logic for Options.xaml
     /// </summary>
-    public partial class BookWindow : Window
+    public partial class Options : Window
     {
-        public BookWindow(Book bookToRead)
+        public Options()
         {
             InitializeComponent();
-            BookViewModel bookViewModel = new BookViewModel(bookToRead);
-            DataContext = bookViewModel;
-            bookWindow.Title = bookToRead.Title;
         }
     }
 }
