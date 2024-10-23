@@ -1,4 +1,5 @@
 ﻿using EPubReader.Commands;
+using EPubReader.Core;
 using EPubReader.Models;
 using EPubReader.Views;
 using Microsoft.Win32;
@@ -16,22 +17,48 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 namespace EPubReader.ViewModel
 {
-    public class AllBooksViewModel
+    public class AllBooksViewModel : ObservableObject
     {
         public ObservableCollection<Book> Books { get; set; }
-        public Book SelectedBook { get; set; }
-        public int BookCounter
+
+        private Book _selectedBook;
+        public Book SelectedBook
         {
-            get { return Books.Count; }
+            get {  return _selectedBook; }
+            set
+            {
+                _selectedBook = value;
+                OnPropertyChanged();
+            }
         }
+
+        private int _booksCounter;
+        public int BooksCounter
+        {
+            get { return _booksCounter; }
+            set
+            {
+                _booksCounter = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand AddNewBookCommand { get; set; }
         public ICommand OpenBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
 
+        private void BooksCount(ObservableCollection<Book> Books)
+        {
+            BooksCounter = Books.Count;
+        }
+
         public AllBooksViewModel()
         {
             Books = new ObservableCollection<Book>();
+
             LoadFromJson("books.json");
+
+            BooksCount(Books);
 
             AddNewBookCommand = new RelayCommand(AddNewBook, CanAddNewBook);
             OpenBookCommand = new RelayCommand(OpenBook, CanOpenBook);
@@ -53,6 +80,7 @@ namespace EPubReader.ViewModel
                 book = EpubReader.ReadBook(ofd.FileName);
                 AddBookToJson(Books, book, ofd.FileName);
             }
+            BooksCount(Books);
         }
 
         private bool CanOpenBook(object obj)
@@ -88,8 +116,7 @@ namespace EPubReader.ViewModel
                     Books.Remove(selectedBook);
                     SaveJson("books.json");
                     MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted");
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
+                    GarbageCollector();
                     if (File.Exists($"book-covers/{selectedBook.Id}.png"))
                     {
                         File.Delete($"book-covers/{selectedBook.Id}.png");
@@ -100,6 +127,14 @@ namespace EPubReader.ViewModel
 
         private void AddBookToJson(ObservableCollection<Book> Books, EpubBook book, string bookPath)
         {
+            if (Books.Any(Book => Book.Title == book.Title))
+            {
+                if (MessageBox.Show("There is already book with this title in the list, do you want to add it anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes == false)
+                {
+                    return;
+                }
+            }
+
             Book newBook = new Book()
             {
                 Id = Books.Count > 0 ? Books[Books.Count - 1].Id + 1 : 1,
@@ -115,8 +150,7 @@ namespace EPubReader.ViewModel
             if (!Directory.Exists("book-covers"))
                 Directory.CreateDirectory("book-covers");
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            GarbageCollector();
             if (book.CoverImage != null)
                 File.WriteAllBytes($"book-covers/{newBook.Id}.png", book.CoverImage);
         }
@@ -134,6 +168,12 @@ namespace EPubReader.ViewModel
                 string json = File.ReadAllText(jsonPath);
                 Books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(json);
             }
+        }
+
+        private void GarbageCollector()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

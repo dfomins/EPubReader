@@ -28,7 +28,7 @@ namespace EPubReader.Views
             BookViewModel bookViewModel = new BookViewModel(bookToRead);
             DataContext = bookViewModel;
             bookWindow.Title = bookToRead.Title;
-            bookContent.Text = bookViewModel.selectedChapter;
+            bookContent.Text = bookViewModel.Chapter;
         }
     }
 }

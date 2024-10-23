@@ -16,7 +16,6 @@ namespace EPubReader.Views
             InitializeComponent();
             AllBooksViewModel booksViewModel = new AllBooksViewModel();
             this.DataContext = booksViewModel;
-            int currentCount = booksViewModel.BookCounter;
         }
 
         private void DeleteBooks_Click(object sender, RoutedEventArgs e)

@@ -18,12 +18,15 @@ namespace EPubReader.ViewModel
         public Book Book { get; set; }
         public string selectedChapter { get; set; }
         public ICommand OptionsCommand { get; set; }
+        public string Chapter { get; set; }
 
         public BookViewModel(Book bookToRead)
         {
             Book = bookToRead;
             OptionsCommand = new RelayCommand(OpenOptions, CanOpenOptions);
             chaptersList = GetAllChapters(chaptersList);
+            EpubBook epub = EpubReader.ReadBook(Book.Path);
+            Chapter = epub.ReadingOrder[2].Content;
         }
 
         private bool CanOpenOptions(object obj)
