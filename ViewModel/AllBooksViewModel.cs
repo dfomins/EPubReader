@@ -47,7 +47,7 @@ namespace EPubReader.ViewModel
         public ICommand OpenBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
 
-        private void BooksCount(ObservableCollection<Book> Books)
+        private void BooksCount()
         {
             BooksCounter = Books.Count;
         }
@@ -58,7 +58,7 @@ namespace EPubReader.ViewModel
 
             LoadFromJson("books.json");
 
-            BooksCount(Books);
+            BooksCount();
 
             AddNewBookCommand = new RelayCommand(AddNewBook, CanAddNewBook);
             OpenBookCommand = new RelayCommand(OpenBook, CanOpenBook);
@@ -80,7 +80,7 @@ namespace EPubReader.ViewModel
                 book = EpubReader.ReadBook(ofd.FileName);
                 AddBookToJson(Books, book, ofd.FileName);
             }
-            BooksCount(Books);
+            BooksCount();
         }
 
         private bool CanOpenBook(object obj)
@@ -109,19 +109,21 @@ namespace EPubReader.ViewModel
 
         private void DeleteBook(object obj)
         {
-            Book selectedBook = (Book)obj;
-            if(MessageBox.Show("Are you sure you want to delete this book?", "Deletion confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                if (selectedBook != null)
+            if (obj != null)
+            {
+                Book selectedBook = (Book)obj;
+                if (MessageBox.Show("Are you sure you want to delete this book?", "Deletion confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     Books.Remove(selectedBook);
                     SaveJson("books.json");
-                    MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted");
+                    MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
                     GarbageCollector();
                     if (File.Exists($"book-covers/{selectedBook.Id}.png"))
                     {
                         File.Delete($"book-covers/{selectedBook.Id}.png");
                     }
                 }
+                BooksCount();
             }
         }
 
