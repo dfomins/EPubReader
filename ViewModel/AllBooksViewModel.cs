@@ -19,21 +19,14 @@ namespace EPubReader.ViewModel
     public class AllBooksViewModel
     {
         public ObservableCollection<Book> Books { get; set; }
-
         public Book SelectedBook { get; set; }
-
         public int BookCounter
         {
             get { return Books.Count; }
         }
-
         public ICommand AddNewBookCommand { get; set; }
-
         public ICommand OpenBookCommand { get; set; }
-
         public ICommand DeleteBookCommand { get; set; }
-
-
 
         public AllBooksViewModel()
         {
@@ -64,7 +57,11 @@ namespace EPubReader.ViewModel
 
         private bool CanOpenBook(object obj)
         {
-            return true;
+            if (File.Exists(((Book)obj).Path))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void OpenBook(object obj)

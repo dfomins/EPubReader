@@ -16,6 +16,7 @@ namespace EPubReader.Views
             InitializeComponent();
             AllBooksViewModel booksViewModel = new AllBooksViewModel();
             this.DataContext = booksViewModel;
+            int currentCount = booksViewModel.BookCounter;
         }
 
         private void DeleteBooks_Click(object sender, RoutedEventArgs e)
@@ -44,6 +45,9 @@ namespace EPubReader.Views
                 if (model.OpenBookCommand.CanExecute(selectedBook))
                 {
                     model.OpenBookCommand.Execute(selectedBook);
+                } else
+                {
+                    MessageBox.Show("Book path does not exist!", "Error");
                 }
             }
         }

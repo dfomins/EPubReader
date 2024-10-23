@@ -16,6 +16,7 @@ namespace EPubReader.ViewModel
     {
         public List<string> chaptersList {  get; set; }
         public Book Book { get; set; }
+        public string selectedChapter { get; set; }
         public ICommand OptionsCommand { get; set; }
 
         public BookViewModel(Book bookToRead)
@@ -43,10 +44,25 @@ namespace EPubReader.ViewModel
 
             if (epub.Navigation != null)
             {
-                foreach (EpubNavigationItem item in epub.Navigation)
+                for (int i = 0; i < epub.Navigation.Count; i++)
                 {
-                    chaptersList.Add(item.Title);
+                    chaptersList.Add($"{i+1}. {epub.Navigation[i].Title}");
+
+                    for (int j = 0; j < epub.Navigation[i].NestedItems.Count; j++)
+                    {
+                        chaptersList.Add($"  {i+1}.{j+1}. {epub.Navigation[i].NestedItems[j].Title}");
+                    }
                 }
+
+                //foreach (EpubNavigationItem item in epub.Navigation)
+                //{
+                //    chaptersList.Add($"{i}. {item.Title}");
+                //    foreach (EpubNavigationItem nestedNavigationItem in item.NestedItems)
+                //    {
+                //        chaptersList.Add($"  {i}.{nestedNavigationItem.Title}");
+                //    }
+                //    i++;
+                //}
             }
             
             return chaptersList;

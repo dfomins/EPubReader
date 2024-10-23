@@ -14,8 +14,11 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Cursor="Hand" Header="Options" Command="{Binding OptionsCommand}"/>
         </Menu>
-        <ComboBox ItemsSource="{Binding chaptersList}" Grid.Column="1" Name="chaptersList" Text="Chapters list" Focusable="False" IsEditable="True" IsReadOnly="True" DockPanel.Dock="Top" />
-        <TextBox DockPanel.Dock="Bottom" IsReadOnly="True"/>
-
+        <ComboBox ItemsSource="{Binding chaptersList}" SelectedItem="{Binding selectedChapter, Mode=TwoWay}" Grid.Column="1" Name="chaptersList" Text="Chapters list" Focusable="False" IsEditable="True" IsReadOnly="True" DockPanel.Dock="Top" />
+        <DockPanel>
+            <Button Content="Prev" />
+            <Button Content="Next" DockPanel.Dock="Right"/>
+            <TextBox Name="bookContent" DockPanel.Dock="Bottom" IsReadOnly="True"/>
+        </DockPanel>
     </DockPanel>
 </Window>

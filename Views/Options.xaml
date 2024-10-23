@@ -6,7 +6,36 @@
         xmlns:local="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
         Title="Options" Height="400" Width="700" ResizeMode="NoResize">
-    <Grid>
-        
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.9*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 10" Padding="10">
+            <StackPanel>
+                <Label Content="Font family"/>
+                <ComboBox>
+                    <ComboBoxItem Content="Font nr 1"/>
+                </ComboBox>
+            </StackPanel>
+        </Border>
+        <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5 0 0 10" Padding="10">
+            <StackPanel>
+                <Label Content="Font family"/>
+                <ListBox>
+                    <ListBoxItem Content="8"/>
+                    <ListBoxItem Content="10"/>
+                    <ListBoxItem Content="12"/>
+                </ListBox>
+            </StackPanel>
+        </Border>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Save" Width="70" Margin="0 0 10 0"/>
+            <Button Content="Close" Width="70"/>
+        </StackPanel>
     </Grid>
 </Window>
