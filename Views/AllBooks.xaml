@@ -46,7 +46,7 @@
                                     <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
                                         <Label.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Delete book" Click="DeleteBooks_Click" />
+                                                <MenuItem Header="Delete book" Click="MenuItem_Click" />
                                             </ContextMenu>
                                         </Label.ContextMenu>
                                     </Label>
