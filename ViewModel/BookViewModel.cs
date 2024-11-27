@@ -2,7 +2,14 @@
 using EPubReader.Core;
 using EPubReader.Models;
 using EPubReader.Views;
+using HtmlAgilityPack;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using VersOne.Epub;
 
 namespace EPubReader.ViewModel
@@ -10,52 +17,146 @@ namespace EPubReader.ViewModel
     public class BookViewModel : ObservableObject
     {
         public List<EpubNavigationItem> NavigationItems { get; set; }
-        public Book Book { get; set; }
-        public string selectedChapter { get; set; }
-        public int CurrentPage { get; set; }
+        public FlowDocument flowDocument { get; set; }
+        public ICollection<EpubLocalByteContentFile> images { get; set; }
         public ICommand OptionsCommand { get; set; }
         public ICommand NextPageCommand { get; set; }
 
-        private string _chapter;
-        public string Chapter
+        public BookViewModel(string bookPath)
         {
-            get { return _chapter; }
-            set
+            EpubBook book = EpubReader.ReadBook(bookPath);
+            images = book.Content.Images.Local;
+
+            flowDocument = new FlowDocument();
+            flowDocument.ColumnWidth = double.PositiveInfinity;
+
+            var document = new HtmlDocument();
+
+            foreach(EpubLocalTextContentFile chapter in book.ReadingOrder)
             {
-                _chapter = value;
-                OnPropertyChanged();
+                document.LoadHtml(chapter.Content);
+                var bodyNode = document.DocumentNode.SelectSingleNode("//body");
+
+                //if (bodyNode == null) continue;
+
+                var nodes = bodyNode.Descendants();
+
+                Section section = new Section();
+
+                foreach (var node in nodes)
+                {
+                    if (node.NodeType == HtmlNodeType.Element && node.ParentNode == bodyNode)
+                        ParseNodes(node, section);
+                }
+
+                flowDocument.Blocks.Add(section);
             }
         }
 
-        public BookViewModel(Book bookToRead)
+        public void ParseNodes(HtmlNode node, Section section)
         {
-            Book = bookToRead;
+            switch (node.Name)
+            {
+                case "section":
+                case "div":
+                    var childNodes = node.ChildNodes;
+                    foreach (var childNode in childNodes)
+                    {
+                        if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
+                            ParseNodes(childNode, section);
+                    }
+                    return;
 
-            CurrentPage = 0;
+                case "a":
+                case "strong":
+                case "#text":
+                case "p":
+                    string textWithoutSpaces = node.InnerText.Replace("\n", " ").Replace("\r", " ");
+                    Paragraph text = new Paragraph(new Run(textWithoutSpaces));
+                    if (node.Name == "p")
+                    {
+                        text.TextIndent = 20;
+                    }
+                    else if (node.Name == "strong")
+                    {
+                        text.FontWeight = FontWeights.Bold;
+                    }
 
-            OptionsCommand = new RelayCommand(OpenOptions, CanOpenOptions);
-            NextPageCommand = new RelayCommand(OpenNextPage, CanOpenNextPage);
+                    section.Blocks.Add(text);
+                    break;
 
-            EpubBook epub = EpubReader.ReadBook(Book.Path);
+                case "h1":
+                    Paragraph headerParagraph = new Paragraph(new Run(node.InnerText))
+                    {
+                        FontSize = 24,
+                        FontWeight = FontWeights.Bold,
+                        TextAlignment = TextAlignment.Center,
+                        BreakPageBefore = true
+                    };
 
-            NavigationItems = epub.Navigation;
+                    section.Blocks.Add(headerParagraph);
+                    break;
 
-            Chapter = epub.Content.Html.Local[CurrentPage].Content;
+                case "h2":
+                    headerParagraph = new Paragraph(new Run(node.InnerText))
+                    {
+                        FontSize = 20,
+                        FontWeight = FontWeights.Bold,
+                        TextAlignment = TextAlignment.Center,
+                        BreakPageBefore = true
+                    };
+
+                    section.Blocks.Add(headerParagraph);
+                    break;
+
+                case "h3":
+                    section.Blocks.Add(new Paragraph(new Run(node.InnerText))
+                    {
+                        FontSize = 18,
+                        FontWeight = FontWeights.Bold,
+                        TextAlignment = TextAlignment.Center
+                    });
+                    break;
+
+                case "img":
+                    string fileName = node.Attributes["src"].Value;
+                    if (fileName != null)
+                    {
+                        var imageItem = images.FirstOrDefault(x => x.Key == fileName);
+                        BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
+
+                        Image image = new Image
+                        {
+                            Source = bitmapImage,
+                            Width = 200,
+                        };
+
+                        Paragraph paragraph = new Paragraph()
+                        {
+                            TextAlignment = TextAlignment.Center,
+                        };
+
+                        paragraph.Inlines.Add(new InlineUIContainer(image));
+
+                        section.Blocks.Add(paragraph);
+                    }
+                    break;
+            }
         }
 
-        private void UpdateChapter()
+        private BitmapImage CreateBitmapFromBytes(byte[] imageBytes)
         {
+            BitmapImage bitmap = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream(imageBytes))
+            {
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = stream;
+                bitmap.EndInit();
+                bitmap.Freeze();
+            }
 
-        }
-
-        private bool CanOpenNextPage(object obj)
-        {
-            return true;
-        }
-
-        private void OpenNextPage(object obj)
-        {
-            CurrentPage++;
+            return bitmap;
         }
 
         private bool CanOpenOptions(object obj)

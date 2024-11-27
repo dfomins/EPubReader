@@ -16,13 +16,6 @@ namespace EPubReader.ViewModel
     {
         public ObservableCollection<Book> Books { get; set; }
 
-        private Book _selectedBook;
-        public Book SelectedBook
-        {
-            get {  return _selectedBook; }
-            set { _selectedBook = value; OnPropertyChanged(); }
-        }
-
         private int _booksCounter;
         public int BooksCounter
         {
@@ -82,7 +75,7 @@ namespace EPubReader.ViewModel
             Book selectedBook = (Book)obj;
             if (selectedBook != null)
             {
-                BookWindow bookWindow = new BookWindow(selectedBook);
+                BookWindow bookWindow = new BookWindow(selectedBook.Path);
                 bookWindow.ShowDialog();
             }
         }

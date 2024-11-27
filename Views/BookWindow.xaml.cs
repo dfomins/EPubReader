@@ -22,13 +22,11 @@ namespace EPubReader.Views
     /// </summary>
     public partial class BookWindow : Window
     {
-        public BookWindow(Book bookToRead)
+        public BookWindow(string bookPath)
         {
             InitializeComponent();
-            BookViewModel bookViewModel = new BookViewModel(bookToRead);
-            DataContext = bookViewModel;
-            bookWindow.Title = bookToRead.Title;
-            bookContent.Text = bookViewModel.Chapter;
+            BookViewModel bookViewModel = new BookViewModel(bookPath);
+            flowDocumentReader.Document = bookViewModel.flowDocument;
         }
     }
 }

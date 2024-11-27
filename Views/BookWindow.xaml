@@ -21,12 +21,6 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <DockPanel>
-            <Button Content="Prev" />
-            <Button Content="Next" DockPanel.Dock="Right"/>
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBox Name="bookContent" DockPanel.Dock="Bottom" IsReadOnly="True"/>
-            </ScrollViewer>
+        <FlowDocumentReader Name="flowDocumentReader" MaxZoom="300" ViewingMode="TwoPage" IsPageViewEnabled="False" />
         </DockPanel>
-    </DockPanel>
 </Window>
