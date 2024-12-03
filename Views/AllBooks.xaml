@@ -35,10 +35,6 @@
                             <TextBox DockPanel.Dock="Top" Width="200" Margin="5">
                                 <TextBox.Text>Book search...</TextBox.Text>
                             </TextBox>
-                            <ComboBox Width="200" Margin="5" IsEditable="True" IsReadOnly="True" Text="Sort by" BorderBrush="Black">
-                                <ComboBoxItem>Name</ComboBoxItem>
-                                <ComboBoxItem>Adding date</ComboBoxItem>
-                            </ComboBox>
                         </StackPanel>
                         <ListBox Name="booksListBox" Grid.Row="1" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" BorderThickness="0">
                             <ListBox.ItemTemplate>

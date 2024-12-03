@@ -16,6 +16,13 @@ namespace EPubReader.ViewModel
     {
         public ObservableCollection<Book> Books { get; set; }
 
+        private Book _selectedBook;
+        public Book SelectedBook
+        {
+            get { return _selectedBook; }
+            set { _selectedBook = value; OnPropertyChanged(); }
+        }
+
         private int _booksCounter;
         public int BooksCounter
         {

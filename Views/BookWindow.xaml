@@ -8,19 +8,13 @@
         mc:Ignorable="d"
         Title="{Binding Title}" MinHeight="400" Height="450" MinWidth="700" Width="800">
     <DockPanel>
-        <TextBlock DockPanel.Dock="Bottom" Margin="2 1 1 1">
+        <!--<TextBlock DockPanel.Dock="Bottom" Margin="2 1 1 1">
             <Run Text="Reading time: 14:33:21"/>
-        </TextBlock>
+        </TextBlock>-->
         <Menu DockPanel.Dock="Top">
-            <MenuItem Cursor="Hand" Header="Options" Command="{Binding OptionsCommand}"/>
+            <MenuItem Cursor="Hand" Header="Chapters" Height="30" />
+            <MenuItem Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>
         </Menu>
-        <ComboBox ItemsSource="{Binding NavigationItems}" SelectedItem="{Binding selectedChapter, Mode=TwoWay}" Grid.Column="1" Name="chaptersList" Text="Chapters list" Focusable="False" IsEditable="True" IsReadOnly="True" DockPanel.Dock="Top">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <ComboBoxItem Content="{Binding Title}"></ComboBoxItem>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
         <FlowDocumentReader Name="flowDocumentReader" MaxZoom="300" ViewingMode="TwoPage" IsPageViewEnabled="False" />
-        </DockPanel>
+    </DockPanel>
 </Window>

@@ -26,6 +26,7 @@ namespace EPubReader.Views
         {
             InitializeComponent();
             BookViewModel bookViewModel = new BookViewModel(bookPath);
+            bookWindow.Title = bookViewModel.Title;
             flowDocumentReader.Document = bookViewModel.flowDocument;
         }
     }

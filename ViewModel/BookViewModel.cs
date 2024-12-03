@@ -16,16 +16,20 @@ namespace EPubReader.ViewModel
 {
     public class BookViewModel : ObservableObject
     {
-        public List<EpubNavigationItem> NavigationItems { get; set; }
+        //public List<EpubNavigationItem> NavigationItems { get; set; }
+        private EpubBook book { get; set; }
+        public string Title { get; set; }
         public FlowDocument flowDocument { get; set; }
-        public ICollection<EpubLocalByteContentFile> images { get; set; }
-        public ICommand OptionsCommand { get; set; }
-        public ICommand NextPageCommand { get; set; }
+        private ICollection<EpubLocalByteContentFile> Images { get; set; }
+        private ICommand OptionsCommand { get; set; }
+        private ICommand NextPageCommand { get; set; }
 
         public BookViewModel(string bookPath)
         {
-            EpubBook book = EpubReader.ReadBook(bookPath);
-            images = book.Content.Images.Local;
+            book = EpubReader.ReadBook(bookPath);
+            var schema = book.Schema;
+            Title = book.Title;
+            Images = book.Content.Images.Local;
 
             flowDocument = new FlowDocument();
             flowDocument.ColumnWidth = double.PositiveInfinity;
@@ -36,8 +40,6 @@ namespace EPubReader.ViewModel
             {
                 document.LoadHtml(chapter.Content);
                 var bodyNode = document.DocumentNode.SelectSingleNode("//body");
-
-                //if (bodyNode == null) continue;
 
                 var nodes = bodyNode.Descendants();
 
@@ -122,14 +124,24 @@ namespace EPubReader.ViewModel
                     string fileName = node.Attributes["src"].Value;
                     if (fileName != null)
                     {
-                        var imageItem = images.FirstOrDefault(x => x.Key == fileName);
+                        var imageItem = Images.FirstOrDefault(x => x.Key == fileName);
                         BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
 
                         Image image = new Image
                         {
                             Source = bitmapImage,
-                            Width = 200,
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            VerticalAlignment = VerticalAlignment.Stretch,
                         };
+
+                        if (fileName == book.Content.Cover.Key)
+                        {
+                            image.MaxHeight = 800;
+                        } else
+                        {
+                            image.MaxHeight = 300;
+                        }
+                        
 
                         Paragraph paragraph = new Paragraph()
                         {
