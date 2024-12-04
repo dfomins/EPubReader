@@ -1,61 +1,23 @@
-﻿using EPubReader.Commands;
-using EPubReader.Core;
-using EPubReader.Models;
-using EPubReader.Views;
+﻿using EPubReader.Models;
 using HtmlAgilityPack;
-using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
+using System.Threading.Tasks;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows;
+using System.IO;
+using System.Windows.Controls;
 using VersOne.Epub;
+using System.Windows.Media;
 
 namespace EPubReader.ViewModel
 {
-    public class BookViewModel : ObservableObject
+    public class Utilities
     {
-        //public List<EpubNavigationItem> NavigationItems { get; set; }
-        private EpubBook book { get; set; }
-        public string Title { get; set; }
-        public FlowDocument flowDocument { get; set; }
-        private ICollection<EpubLocalByteContentFile> Images { get; set; }
-        private ICommand OptionsCommand { get; set; }
-        private ICommand NextPageCommand { get; set; }
-
-        public BookViewModel(string bookPath)
-        {
-            book = EpubReader.ReadBook(bookPath);
-            Title = book.Title;
-            Images = book.Content.Images.Local;
-            var schema = book.Schema.Package.Metadata;
-
-            flowDocument = new FlowDocument();
-            flowDocument.ColumnWidth = double.PositiveInfinity;
-
-            var document = new HtmlDocument();
-
-            foreach(EpubLocalTextContentFile chapter in book.ReadingOrder)
-            {
-                document.LoadHtml(chapter.Content);
-                var bodyNode = document.DocumentNode.SelectSingleNode("//body");
-
-                var nodes = bodyNode.Descendants();
-
-                Section section = new Section();
-
-                foreach (var node in nodes)
-                {
-                    if (node.NodeType == HtmlNodeType.Element && node.ParentNode == bodyNode)
-                        ParseNodes(node, section);
-                }
-
-                flowDocument.Blocks.Add(section);
-            }
-        }
-
-        public void ParseNodes(HtmlNode node, Section section)
+        static public void ParseNodes(HtmlNode node, Section section, EpubBook book, ICollection<EpubLocalByteContentFile> Images)
         {
             switch (node.Name)
             {
@@ -65,7 +27,7 @@ namespace EPubReader.ViewModel
                     foreach (var childNode in childNodes)
                     {
                         if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
-                            ParseNodes(childNode, section);
+                            ParseNodes(childNode, section, book, Images);
                     }
                     return;
 
@@ -130,14 +92,11 @@ namespace EPubReader.ViewModel
                         Image image = new Image
                         {
                             Source = bitmapImage,
-                            //HorizontalAlignment = HorizontalAlignment.Stretch,
-                            //VerticalAlignment = VerticalAlignment.Center,
                         };
 
                         if (fileName == book.Content?.Cover?.Key)
                         {
                             image.MaxHeight = bitmapImage.Height * 2;
-                            //image.VerticalAlignment = VerticalAlignment.Center;
                             Thickness thicc = new Thickness(0, 0, 0, 40);
                             image.Margin = thicc;
                         }
@@ -160,7 +119,7 @@ namespace EPubReader.ViewModel
             }
         }
 
-        private BitmapImage CreateBitmapFromBytes(byte[] imageBytes)
+        static private BitmapImage CreateBitmapFromBytes(byte[] imageBytes)
         {
             BitmapImage bitmap = new BitmapImage();
             using (MemoryStream stream = new MemoryStream(imageBytes))
@@ -173,17 +132,6 @@ namespace EPubReader.ViewModel
             }
 
             return bitmap;
-        }
-
-        private bool CanOpenOptions(object obj)
-        {
-            return true;
-        }
-
-        private void OpenOptions(object obj)
-        {
-            Options optionsWindow = new Options();
-            optionsWindow.ShowDialog();
         }
     }
 }

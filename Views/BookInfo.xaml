@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:EPubReader.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Border BorderThickness="1 0 0 0" BorderBrush="{StaticResource Border}">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10">
             <Image Source="{Binding ImagePath}"
@@ -33,5 +33,5 @@
                 </TextBlock>
             </StackPanel>
         </ScrollViewer>
-    </Grid>
+    </Border>
 </UserControl>

@@ -1,16 +1,16 @@
-﻿<Window Name="bookWindow"
-        x:Class="EPubReader.Views.BookWindow"
+﻿<Window Name="flowBookWindow"
+        x:Class="EPubReader.Views.FlowBookWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
-        Title="{Binding Title}" MinHeight="400" Height="450" MinWidth="700" Width="800">
+        Height="450" Width="800">
     <DockPanel>
         <!--<TextBlock DockPanel.Dock="Bottom" Margin="2 1 1 1">
-            <Run Text="Reading time: 14:33:21"/>
-        </TextBlock>-->
+        <Run Text="Reading time: 14:33:21"/>
+    </TextBlock>-->
         <Menu DockPanel.Dock="Top">
             <MenuItem Cursor="Hand" Header="Chapters" Height="30" />
             <MenuItem Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>

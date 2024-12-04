@@ -30,8 +30,7 @@ namespace EPubReader.ViewModel
             set { _booksCounter = value; OnPropertyChanged(); }
         }
 
-        public ICommand AddNewBookCommand { get; set; }
-        public ICommand OpenBookCommand { get; set; }
+        //public ICommand AddNewBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
 
         private void BooksCount()
@@ -45,17 +44,10 @@ namespace EPubReader.ViewModel
             LoadFromJson("books.json");
             BooksCount();
 
-            AddNewBookCommand = new RelayCommand(AddNewBook, CanAddNewBook);
-            OpenBookCommand = new RelayCommand(OpenBook, CanOpenBook);
             DeleteBookCommand = new RelayCommand(DeleteBook, CanDeleteBook);
         }
 
-        private bool CanAddNewBook(object obj)
-        {
-            return true;
-        }
-
-        private void AddNewBook(object obj)
+        public void AddNewBook()
         {
             OpenFileDialog ofd = new OpenFileDialog();
             EpubBook book;
@@ -67,6 +59,26 @@ namespace EPubReader.ViewModel
             }
             BooksCount();
         }
+        //public void OpenBook(Book selectedBook, int readerIndex)
+        public void OpenBook(Book selectedBook)
+        {
+            if (File.Exists(selectedBook.Path))
+            {
+                if (selectedBook != null)
+                {
+                    //if (readerIndex == 0)
+                    //{
+                        FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path);
+                        bookWindow.ShowDialog();
+                    //}
+                    //else if (readerIndex == 1)
+                    //{
+                        //RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path);
+                        //richTextBoxBookWindow.ShowDialog();
+                    //}
+                }
+            }
+        }
 
         private bool CanOpenBook(object obj)
         {
@@ -75,16 +87,6 @@ namespace EPubReader.ViewModel
                 return true;
             }
             return false;
-        }
-
-        private void OpenBook(object obj)
-        {
-            Book selectedBook = (Book)obj;
-            if (selectedBook != null)
-            {
-                BookWindow bookWindow = new BookWindow(selectedBook.Path);
-                bookWindow.ShowDialog();
-            }
         }
 
         private bool CanDeleteBook(object obj)
@@ -97,16 +99,13 @@ namespace EPubReader.ViewModel
             if (obj != null)
             {
                 Book selectedBook = (Book)obj;
-                if (MessageBox.Show("Are you sure you want to delete this book?", "Deletion confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                Books.Remove(selectedBook);
+                SaveJson("books.json");
+                MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+                GarbageCollector();
+                if (File.Exists($"book-covers/{selectedBook.Id}.png"))
                 {
-                    Books.Remove(selectedBook);
-                    SaveJson("books.json");
-                    MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
-                    GarbageCollector();
-                    if (File.Exists($"book-covers/{selectedBook.Id}.png"))
-                    {
-                        File.Delete($"book-covers/{selectedBook.Id}.png");
-                    }
+                    File.Delete($"book-covers/{selectedBook.Id}.png");
                 }
                 BooksCount();
             }

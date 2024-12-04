@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:EPubReader"
              StartupUri="Views/AllBooks.xaml">
     <Application.Resources>
-        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionaries/Colors.xaml" />
+                <ResourceDictionary Source="Dictionaries/Styles.xaml" />
+                <ResourceDictionary Source="Dictionaries/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

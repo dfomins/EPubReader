@@ -7,52 +7,54 @@
         xmlns:views="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
         Title="EPubReader" MinHeight="400" Height="450" MinWidth="700" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="29*"/>
-        </Grid.ColumnDefinitions>
-        <DockPanel Grid.ColumnSpan="2">
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Cursor="Hand" Header="Load book" Command="{Binding AddNewBookCommand}"/>
-            </Menu>
-            <TextBox Name="NumberOfBooks"
-                     DockPanel.Dock="Bottom"
-                     Text="{Binding BooksCounter, StringFormat='Number of books: {0}'}"
-                     IsReadOnly="True"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2.5*"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Border BorderBrush="Gray" BorderThickness="0 0 1 0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <TextBox DockPanel.Dock="Top" Width="200" Margin="5">
-                                <TextBox.Text>Book search...</TextBox.Text>
-                            </TextBox>
-                        </StackPanel>
-                        <ListBox Name="booksListBox" Grid.Row="1" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" BorderThickness="0">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
-                                        <Label.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Delete book" Click="MenuItem_Click" />
-                                            </ContextMenu>
-                                        </Label.ContextMenu>
-                                    </Label>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </Border>
-                <views:BookInfo Grid.Column="1" DataContext="{Binding SelectedBook}"/>
+    <DockPanel>
+        <!--<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="{StaticResource Panel}">
+            <ComboBox Name="readerSelect" Width="150" Margin="5">
+                <ComboBoxItem Content="FlowDocumentReader" IsSelected="True"/>
+                <ComboBoxItem Content="RichTextBox"/>
+            </ComboBox>
+        </StackPanel>-->
+
+        <StackPanel DockPanel.Dock="Left" Width="50" Background="{StaticResource Panel}">
+            <Button Style="{StaticResource RoundButton}" Width="35" Margin="0 10 0 0" Click="AddNewBookCommand">
+                <Viewbox Width="20" Height="25">
+                    <Path Data="{StaticResource AddNewBook}" Fill="White" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Background="{StaticResource Main}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition />
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBox Width="200" Margin="5" Style="{StaticResource SearchInput}" />
+                    </StackPanel>
+                    <ListBox Grid.Row="1" Name="booksListBox" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0 1 0 0" BorderBrush="{StaticResource Border}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
+                                    <Label.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Delete book" Click="MenuItem_Click" />
+                                        </ContextMenu>
+                                    </Label.ContextMenu>
+                                </Label>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                <TextBlock Grid.Row="2"
+                         Name="NumberOfBooks"
+                         Padding="5 0 0 0"
+                         Text="{Binding BooksCounter, StringFormat='Number of books: {0}'}" />
             </Grid>
-        </DockPanel>
-    </Grid>
+            <views:BookInfo Grid.Column="1" DataContext="{Binding SelectedBook}"/>
+        </Grid>
+    </DockPanel>
 </Window>
