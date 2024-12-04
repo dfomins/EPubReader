@@ -27,9 +27,9 @@ namespace EPubReader.ViewModel
         public BookViewModel(string bookPath)
         {
             book = EpubReader.ReadBook(bookPath);
-            var schema = book.Schema;
             Title = book.Title;
             Images = book.Content.Images.Local;
+            var schema = book.Schema.Package.Metadata;
 
             flowDocument = new FlowDocument();
             flowDocument.ColumnWidth = double.PositiveInfinity;
@@ -73,8 +73,8 @@ namespace EPubReader.ViewModel
                 case "strong":
                 case "#text":
                 case "p":
-                    string textWithoutSpaces = node.InnerText.Replace("\n", " ").Replace("\r", " ");
-                    Paragraph text = new Paragraph(new Run(textWithoutSpaces));
+                    string textWithoutEnters = node.InnerText.Replace("\n", " ").Replace("\r", " ");
+                    Paragraph text = new Paragraph(new Run(textWithoutEnters));
                     if (node.Name == "p")
                     {
                         text.TextIndent = 20;
@@ -130,18 +130,22 @@ namespace EPubReader.ViewModel
                         Image image = new Image
                         {
                             Source = bitmapImage,
-                            HorizontalAlignment = HorizontalAlignment.Stretch,
-                            VerticalAlignment = VerticalAlignment.Stretch,
+                            //HorizontalAlignment = HorizontalAlignment.Stretch,
+                            //VerticalAlignment = VerticalAlignment.Center,
                         };
 
-                        if (fileName == book.Content.Cover.Key)
+                        if (fileName == book.Content?.Cover?.Key)
                         {
-                            image.MaxHeight = 800;
-                        } else
-                        {
-                            image.MaxHeight = 300;
+                            image.MaxHeight = bitmapImage.Height * 2;
+                            //image.VerticalAlignment = VerticalAlignment.Center;
+                            Thickness thicc = new Thickness(0, 0, 0, 40);
+                            image.Margin = thicc;
                         }
-                        
+                        else
+                        {
+                            image.MaxWidth = bitmapImage.Width;
+                        }
+
 
                         Paragraph paragraph = new Paragraph()
                         {
