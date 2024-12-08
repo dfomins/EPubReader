@@ -27,10 +27,10 @@ namespace EPubReader.Views
         private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Book selectedBook = (Book)booksListBox.SelectedItem;
-            //int readerIndex = readerSelect.SelectedIndex;
+            int readerIndex = readerSelect.SelectedIndex;
 
-            //booksViewModel.OpenBook(selectedBook, readerIndex);
-            booksViewModel.OpenBook(selectedBook);
+            booksViewModel.OpenBook(selectedBook, readerIndex);
+            //booksViewModel.OpenBook(selectedBook);
 
 
             //if (booksViewModel.OpenBookCommand.CanExecute(selectedBook))

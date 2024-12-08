@@ -59,23 +59,22 @@ namespace EPubReader.ViewModel
             }
             BooksCount();
         }
-        //public void OpenBook(Book selectedBook, int readerIndex)
-        public void OpenBook(Book selectedBook)
+        public void OpenBook(Book selectedBook, int readerIndex)
         {
             if (File.Exists(selectedBook.Path))
             {
                 if (selectedBook != null)
                 {
-                    //if (readerIndex == 0)
-                    //{
+                    if (readerIndex == 0)
+                    {
                         FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path);
                         bookWindow.ShowDialog();
-                    //}
-                    //else if (readerIndex == 1)
-                    //{
-                        //RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path);
-                        //richTextBoxBookWindow.ShowDialog();
-                    //}
+                    }
+                    else if (readerIndex == 1)
+                    {
+                        RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path);
+                        richTextBoxBookWindow.ShowDialog();
+                    }
                 }
             }
         }
