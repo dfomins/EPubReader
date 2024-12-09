@@ -1,6 +1,7 @@
 ﻿using EPubReader.Core;
 using EPubReader.Views;
 using HtmlAgilityPack;
+using System.Reflection.Metadata;
 using System.Windows.Documents;
 using System.Windows.Input;
 using VersOne.Epub;
@@ -10,25 +11,30 @@ namespace EPubReader.ViewModel
     public class BookViewModel : ObservableObject
     {
         //public List<EpubNavigationItem> NavigationItems { get; set; }
-        private EpubBook book { get; set; }
+        private EpubBook Book { get; set; }
         public string Title { get; set; }
         public FlowDocument flowDocument { get; set; }
         private ICollection<EpubLocalByteContentFile> Images { get; set; }
         private ICommand OptionsCommand { get; set; }
 
-        public BookViewModel(string bookPath)
+        public BookViewModel(string BookPath)
         {
-            book = EpubReader.ReadBook(bookPath);
-            Title = book.Title;
-            Images = book.Content.Images.Local;
-            var schema = book.Schema.Package.Metadata;
+            Book = EpubReader.ReadBook(BookPath);
+            Title = Book.Title;
+            Images = Book.Content.Images.Local;
+            var schema = Book.Schema.Package.Metadata;
 
             flowDocument = new FlowDocument();
             flowDocument.ColumnWidth = double.PositiveInfinity;
 
-            var document = new HtmlDocument();
+            HtmlDocument document = new HtmlDocument();
 
-            foreach(EpubLocalTextContentFile chapter in book.ReadingOrder)
+            LoadBookContent(document);
+        }
+
+        private void LoadBookContent(HtmlDocument document)
+        {
+            foreach (EpubLocalTextContentFile chapter in Book.ReadingOrder)
             {
                 document.LoadHtml(chapter.Content);
                 var bodyNode = document.DocumentNode.SelectSingleNode("//body");
@@ -40,7 +46,7 @@ namespace EPubReader.ViewModel
                 foreach (var node in nodes)
                 {
                     if (node.NodeType == HtmlNodeType.Element && node.ParentNode == bodyNode)
-                        Utilities.ParseNodes(node, section, book, Images);
+                        Utilities.ParseNodes(node, section, Book, Images);
                 }
 
                 flowDocument.Blocks.Add(section);

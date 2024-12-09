@@ -12,11 +12,19 @@ using System.IO;
 using System.Windows.Controls;
 using VersOne.Epub;
 using System.Windows.Media;
+using System.Reflection.Metadata;
 
 namespace EPubReader.ViewModel
 {
     public class Utilities
     {
+        static public HtmlNode GetNodesFromContent(string Content)
+        {
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(Content);
+            return document.DocumentNode.SelectSingleNode("//body");
+        }
+
         static public void ParseNodes(HtmlNode node, Section section, EpubBook book, ICollection<EpubLocalByteContentFile> Images)
         {
             switch (node.Name)
@@ -84,7 +92,7 @@ namespace EPubReader.ViewModel
 
                 case "img":
                     string fileName = node.Attributes["src"].Value;
-                    if (fileName != null)
+                    if (fileName != null && Images != null)
                     {
                         var imageItem = Images.FirstOrDefault(x => x.Key == fileName);
                         BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
@@ -104,7 +112,6 @@ namespace EPubReader.ViewModel
                         {
                             image.MaxWidth = bitmapImage.Width;
                         }
-
 
                         Paragraph paragraph = new Paragraph()
                         {

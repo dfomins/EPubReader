@@ -6,7 +6,10 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using VersOne.Epub;
 
@@ -30,7 +33,6 @@ namespace EPubReader.ViewModel
             set { _booksCounter = value; OnPropertyChanged(); }
         }
 
-        //public ICommand AddNewBookCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
 
         private void BooksCount()
@@ -59,18 +61,19 @@ namespace EPubReader.ViewModel
             }
             BooksCount();
         }
-        public void OpenBook(Book selectedBook, int readerIndex)
+
+        public void OpenBook(Book selectedBook, int selectedReader, int timer)
         {
             if (File.Exists(selectedBook.Path))
             {
                 if (selectedBook != null)
                 {
-                    if (readerIndex == 0)
+                    if (selectedReader == 0)
                     {
-                        FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path);
+                        FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path, timer);
                         bookWindow.ShowDialog();
                     }
-                    else if (readerIndex == 1)
+                    else if (selectedReader == 1)
                     {
                         RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path);
                         richTextBoxBookWindow.ShowDialog();
@@ -79,34 +82,31 @@ namespace EPubReader.ViewModel
             }
         }
 
-        private bool CanOpenBook(object obj)
+        private bool CanDeleteBook(object obj)
         {
-            if (File.Exists(((Book)obj).Path))
+            if (obj != null)
             {
                 return true;
             }
             return false;
         }
 
-        private bool CanDeleteBook(object obj)
-        {
-            return true;
-        }
-
         private void DeleteBook(object obj)
         {
-            if (obj != null)
+            Book selectedBook = (Book)obj;
+            Books.Remove(selectedBook);
+            SaveJson("books.json");
+            MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
+            GarbageCollector();
+            DeleteCover(selectedBook.Id);
+            BooksCount();
+        }
+
+        private void DeleteCover(int id)
+        {
+            if (File.Exists($"book-covers/{id}.png"))
             {
-                Book selectedBook = (Book)obj;
-                Books.Remove(selectedBook);
-                SaveJson("books.json");
-                MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
-                GarbageCollector();
-                if (File.Exists($"book-covers/{selectedBook.Id}.png"))
-                {
-                    File.Delete($"book-covers/{selectedBook.Id}.png");
-                }
-                BooksCount();
+                File.Delete($"book-covers/{id}.png");
             }
         }
 

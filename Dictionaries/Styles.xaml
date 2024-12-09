@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <Style x:Key="RoundButton" TargetType="Button">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -8,12 +9,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Border" Padding="5" Background="{StaticResource Button}" CornerRadius="999">
+                    <Border x:Name="Border" Padding="5" Background="{StaticResource Main}" CornerRadius="2">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{StaticResource ButtonPressed}" TargetName="Border" />
+                            <Setter Property="Background" Value="Gray" TargetName="Border" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -33,4 +34,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
 </ResourceDictionary>

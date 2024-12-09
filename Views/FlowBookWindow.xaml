@@ -6,11 +6,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
-        Height="450" Width="800">
+        MinHeight="400" Height="450"
+        MinWidth="700" Width="800">
     <DockPanel>
-        <!--<TextBlock DockPanel.Dock="Bottom" Margin="2 1 1 1">
-        <Run Text="Reading time: 14:33:21"/>
-    </TextBlock>-->
+        <TextBlock x:Name="TextTimer" DockPanel.Dock="Bottom" Margin="2 1 1 1">
+            <!--<Run Text="Reading time: 00:00"/>-->
+        </TextBlock>
         <Menu DockPanel.Dock="Top">
             <MenuItem Cursor="Hand" Header="Chapters" Height="30" />
             <MenuItem Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>

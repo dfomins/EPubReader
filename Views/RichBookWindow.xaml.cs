@@ -1,4 +1,7 @@
-﻿using System;
+﻿using EPubReader.Commands;
+using EPubReader.ViewModel;
+using EPubReader.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,19 +22,16 @@ namespace EPubReader.Views
     /// </summary>
     public partial class RichTextBoxBookWindow : Window
     {
+        RichAllBooksViewModel bookViewModel { get; set; }
+
         public RichTextBoxBookWindow(string BookPath)
         {
             InitializeComponent();
-        }
-
-        private void ZoomOut(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ZoomIn(object sender, RoutedEventArgs e)
-        {
-
+            bookViewModel = new RichAllBooksViewModel(BookPath);
+            richBookWindow.Title = bookViewModel.BookTitle;
+            if (richTextBox != null)
+                richTextBox.Document.Blocks.Clear();
+            richTextBox.Document = bookViewModel.flowDocument;
         }
 
         private void Button_Click_Prev(object sender, RoutedEventArgs e)
@@ -41,7 +41,13 @@ namespace EPubReader.Views
 
         private void Button_Click_Next(object sender, RoutedEventArgs e)
         {
-
+            if (bookViewModel.currentSectionIndex < bookViewModel.ChaptersCount - 1)
+            {
+                if (richTextBox != null)
+                    richTextBox.Document.Blocks.Clear();
+                bookViewModel.currentSectionIndex++;
+                bookViewModel.RenderSection();
+            }
         }
     }
 }

@@ -5,16 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
         xmlns:views="clr-namespace:EPubReader.Views"
+        xmlns:vm="clr-namespace:EPubReader.ViewModel"
         mc:Ignorable="d"
-        Title="EPubReader" MinHeight="400" Height="450" MinWidth="700" Width="800">
+        Title="EPubReader"
+        MinHeight="400" Height="450"
+        MinWidth="700" Width="800"
+        WindowStartupLocation="CenterScreen">
     <DockPanel>
-        <!--<StackPanel DockPanel.Dock="Left" Width="50" Background="{StaticResource Panel}">
-            <Button Style="{StaticResource RoundButton}" Width="35" Margin="0 10 0 0" Click="AddNewBookCommand">
-                <Viewbox Width="20" Height="25">
-                    <Path Data="{StaticResource AddNewBook}" Fill="White" />
-                </Viewbox>
-            </Button>
-        </StackPanel>-->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2.5*"/>
@@ -22,39 +19,44 @@
             </Grid.ColumnDefinitions>
             <Grid Background="{StaticResource Main}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="45"/>
+                    <RowDefinition Height="26" />
                     <RowDefinition Height="40"/>
                     <RowDefinition />
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource Panel}">
-                    <Button Style="{StaticResource RoundButton}" Width="35" Margin="5" Click="AddNewBookCommand">
-                        <Viewbox Width="20" Height="25">
-                            <Path Data="{StaticResource AddNewBook}" Fill="White" />
-                        </Viewbox>
-                    </Button>
-                    <ComboBox Name="readerSelect" Width="150" Margin="5">
-                        <ComboBoxItem Content="FlowDocumentReader" IsSelected="True"/>
-                        <ComboBoxItem Content="RichTextBox"/>
-                    </ComboBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <TextBox Width="200" Margin="5" Style="{StaticResource SearchInput}" />
-                    </StackPanel>
-                    <ListBox Grid.Row="2" Name="booksListBox" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0 1 0 0" BorderBrush="{StaticResource Border}">
+                <Menu BorderThickness="0 0 0 1" BorderBrush="{StaticResource Border}">
+                    <MenuItem Height="25" Header="Load book" Cursor="Hand" Click="AddNewBookCommand" />
+                    <MenuItem Height="25" Header="Reader" Cursor="Hand">
+                        <RadioButton x:Name="ReaderSelectBtn_1" Content="FlowDocumentReader" IsChecked="True" Cursor="Hand" />
+                        <RadioButton x:Name="ReaderSelectBtn_2" Content="RichTextBox" Cursor="Hand" />
+                    </MenuItem>
+                    <MenuItem Height="25" Header="Timer" Cursor="Hand">
+                        <MenuItem Name="Timer_Checked" Header="Enable timer" IsCheckable="True" Cursor="Hand" />
+                        <MenuItem Header="Timer settings" Cursor="Hand" Click="MenuItem_Click_1"/>
+                    </MenuItem>
+                </Menu>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SearchBox" Margin="5" Padding="3 0" Style="{StaticResource SearchInput}" />
+                    <Label Content="Search for book..." IsHitTestVisible="False" Margin="5" VerticalAlignment="Center" Visibility="{Binding Text.IsEmpty, ElementName=SearchBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </Grid>
+                    <ListBox Grid.Row="2" Name="booksListBox" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
                                     <Label.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Delete book" Click="MenuItem_Click" />
+                                    <ContextMenu>
+                                        <MenuItem Header="Delete book" Click="MenuItem_Click" />
                                         </ContextMenu>
                                     </Label.ContextMenu>
                                 </Label>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                <TextBlock Grid.Row="3"
+                    <TextBlock Grid.Row="3"
                          Name="NumberOfBooks"
                          Padding="5 0 0 0"
                          Text="{Binding BooksCounter, StringFormat='Number of books: {0}'}" />
