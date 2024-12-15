@@ -54,7 +54,7 @@
                                 </Style>
                             </Button.Resources>
                         </Button>
-                        <TextBlock Text="Reading time: " VerticalAlignment="Center"></TextBlock>
+                        <TextBlock x:Name="TimerText" VerticalAlignment="Center" TextAlignment="Center" Width="150" />
                         <Button DockPanel.Dock="Left" Content="Next" Padding="30 10" Margin="15 10" Cursor="Hand" Background="White" Click="Button_Click_Next">
                             <Button.Resources>
                                 <Style TargetType="{x:Type Border}">

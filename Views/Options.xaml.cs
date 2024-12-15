@@ -1,6 +1,7 @@
 ﻿using EPubReader.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,37 @@ namespace EPubReader.Views
     /// </summary>
     public partial class Options : Window
     {
-        public Options()
+        public string selectedFontFamily { get; set; }
+
+        public Options(string CurrentFont)
         {
             InitializeComponent();
+
+            fontFamilyComboBox.SelectedItem = CurrentFont;
+
+            var allSystemFonts = Fonts.SystemFontFamilies.ToArray();
+            string[] fontsNameList = new string[allSystemFonts.Length];
+            for (int i = 0; i < allSystemFonts.Length; i++)
+            {
+                fontsNameList[i] = allSystemFonts[i].Source;
+            }
+
+            fontFamilyComboBox.ItemsSource = fontsNameList;
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (fontFamilyComboBox.SelectedItem != null)
+            {
+                selectedFontFamily = Convert.ToString(fontFamilyComboBox.SelectedItem);
+                DialogResult = true;
+            }
+            Close();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

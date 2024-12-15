@@ -19,8 +19,8 @@ namespace EPubReader.Views
     /// </summary>
     public partial class Timer : Window
     {
-        public int Hours { get; set; }
-        public int Minutes { get; set; }
+        public int hours { get; set; }
+        public int minutes { get; set; }
 
         public Timer(int hours, int minutes)
         {
@@ -31,8 +31,8 @@ namespace EPubReader.Views
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            Hours = Convert.ToInt32(TimerHours.Text);
-            Minutes = Convert.ToInt32(TimerMinutes.Text);
+            hours = Convert.ToInt32(TimerHours.Text);
+            minutes = Convert.ToInt32(TimerMinutes.Text);
             DialogResult = true;
             Close();
         }

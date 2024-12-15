@@ -12,14 +12,15 @@ namespace EPubReader.Views
     {
         AllBooksViewModel booksViewModel = new AllBooksViewModel();
 
-        int Hours { get; set; }
-        int Minutes { get; set; }
+        int hours { get; set; }
+        int minutes { get; set; }
 
         public AllBooks()
         {
             InitializeComponent();
+            booksListBox.ItemsSource = booksViewModel.books;
             this.DataContext = booksViewModel;
-            Hours = Minutes = 0;
+            hours = minutes = 0;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -29,16 +30,16 @@ namespace EPubReader.Views
                 booksViewModel.DeleteBookCommand.Execute(selectedBook);
         }
 
-        private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Label_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Book selectedBook = (Book)booksListBox.SelectedItem;
             int timer = 0;
 
+            if (Timer_Checked.IsChecked == true)
+                timer = hours * 3600 + minutes * 60;
+
             if (ReaderSelectBtn_1.IsChecked == true)
             {
-                if (Timer_Checked.IsChecked == true)
-                    timer = Hours * 3600 + Minutes * 60;
-
                 booksViewModel.OpenBook(selectedBook, 0, timer);
             }
             else if (ReaderSelectBtn_2.IsChecked == true)
@@ -52,14 +53,21 @@ namespace EPubReader.Views
             booksViewModel.AddNewBook();
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void TimerMenu_Click(object sender, RoutedEventArgs e)
         {
-            Timer timerWindow = new Timer(Hours, Minutes);
+            Timer timerWindow = new Timer(hours, minutes);
             if (timerWindow.ShowDialog() == true)
             {
-                Hours = timerWindow.Hours;
-                Minutes = timerWindow.Minutes;
+                hours = timerWindow.hours;
+                minutes = timerWindow.minutes;
             }
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            string searchText = SearchBox.Text;
+            Book[] searchedBooks = booksViewModel.books.Where(Book => Book.Title.ToLower().Contains(searchText.ToLower())).ToArray();
+            booksListBox.ItemsSource = searchedBooks;
         }
     }
 }

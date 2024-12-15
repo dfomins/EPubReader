@@ -32,21 +32,26 @@
                     </MenuItem>
                     <MenuItem Height="25" Header="Timer" Cursor="Hand">
                         <MenuItem Name="Timer_Checked" Header="Enable timer" IsCheckable="True" Cursor="Hand" />
-                        <MenuItem Header="Timer settings" Cursor="Hand" Click="MenuItem_Click_1"/>
+                        <MenuItem Header="Timer settings" Cursor="Hand" Click="TimerMenu_Click"/>
                     </MenuItem>
                 </Menu>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SearchBox" Margin="5" Padding="3 0" Style="{StaticResource SearchInput}" />
+                    <TextBox x:Name="SearchBox" Margin="5 5 0 5" Padding="3 0" Style="{StaticResource SearchInput}" />
                     <Label Content="Search for book..." IsHitTestVisible="False" Margin="5" VerticalAlignment="Center" Visibility="{Binding Text.IsEmpty, ElementName=SearchBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Grid.Column="1" Margin="5" Padding="5" Cursor="Hand" Click="SearchButton_Click">
+                        <Viewbox>
+                            <Path Data="{StaticResource SearchIcon}" Fill="Black"/>
+                        </Viewbox>
+                    </Button>
                 </Grid>
-                    <ListBox Grid.Row="2" Name="booksListBox" ItemsSource="{Binding Books}" SelectedItem="{Binding SelectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
+                    <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_MouseDoubleClick">
+                                <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_DoubleClick">
                                     <Label.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Delete book" Click="MenuItem_Click" />
@@ -59,9 +64,9 @@
                     <TextBlock Grid.Row="3"
                          Name="NumberOfBooks"
                          Padding="5 0 0 0"
-                         Text="{Binding BooksCounter, StringFormat='Number of books: {0}'}" />
+                         Text="{Binding booksCounter, StringFormat='Number of books: {0}'}" />
             </Grid>
-            <views:BookInfo Grid.Column="1" DataContext="{Binding SelectedBook}"/>
+            <views:BookInfo Grid.Column="1" DataContext="{Binding selectedBook}"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -1,17 +1,6 @@
-﻿using EPubReader.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EPubReader.ViewModels;
+using System.Diagnostics.Metrics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace EPubReader.Views
@@ -21,17 +10,19 @@ namespace EPubReader.Views
     /// </summary>
     public partial class FlowBookWindow : Window
     {
-        DispatcherTimer dispatcherTimer;
-        int counter = 0;
-        int seconds;
+        DispatcherTimer dispatcherTimer { get; }
+        int counter { get; set; }
+        int seconds { get; }
 
         public FlowBookWindow(string BookPath, int seconds)
         {
             InitializeComponent();
             this.seconds = seconds;
-            BookViewModel bookViewModel = new BookViewModel(BookPath);
-            flowBookWindow.Title = bookViewModel.Title;
-            flowDocumentReader.Document = bookViewModel.flowDocument;
+            FReaderBookViewModel flowBookViewModel = new FReaderBookViewModel(BookPath);
+            flowBookWindow.Title = flowBookViewModel.BookTitle;
+            flowDocumentReader.Document = flowBookViewModel.flowDocument;
+            this.DataContext = flowBookViewModel;
+
             if (seconds > 0)
             {
                 dispatcherTimer = new DispatcherTimer();
@@ -40,7 +31,7 @@ namespace EPubReader.Views
                 dispatcherTimer.Start();
             } else
             {
-                TextTimer.Text = "Timer: disabled";
+                TimerText.Text = "Timer: disabled";
             }
         }
 
@@ -54,7 +45,7 @@ namespace EPubReader.Views
             }
             TimeSpan timer = TimeSpan.FromSeconds(seconds);
             TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
-            TextTimer.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
+            TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
         }
     }
 }

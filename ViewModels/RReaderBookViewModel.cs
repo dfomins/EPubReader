@@ -4,44 +4,47 @@ using EPubReader.ViewModel;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Documents.DocumentStructures;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using VersOne.Epub;
 
 namespace EPubReader.ViewModels
 {
-    public class RichAllBooksViewModel
+    public class RReaderBookViewModel
     {
-        public string BookTitle { get; set; }
-        public int ChaptersCount { get; }
-        public FlowDocument flowDocument { get; set; } = new FlowDocument();
+        private BaseBookViewModel bookViewModel { get; }
+        private List<EpubLocalTextContentFile> readingOrder { get; }
+        public string bookTitle { get; }
+        public int chaptersCount { get; }
+        private Section[] sections { get; }
         public int currentSectionIndex { get; set; } = 0;
+        public FlowDocument flowDocument { get; }
 
-
-        EpubBook Book { get; set; }
-        ICollection<EpubLocalByteContentFile> Images { get; set; }
-        HtmlDocument document { get; set; } = new HtmlDocument();
-        Section[] sections { get; set; }
-
-        public RichAllBooksViewModel(string BookPath)
+        public RReaderBookViewModel(string BookPath)
         {
-            Book = EpubReader.ReadBook(BookPath);
-            ChaptersCount = Book.ReadingOrder.Count;
-            BookTitle = Book.Title;
-            Images = Book.Content.Images.Local;
-            sections = new Section[Book.ReadingOrder.Count];
-
+            bookViewModel = new BaseBookViewModel(BookPath);
+            bookTitle = bookViewModel.bookTitle;
+            readingOrder = bookViewModel.book.ReadingOrder;
+            chaptersCount = readingOrder.Count;
+            sections = new Section[chaptersCount];
+            flowDocument = bookViewModel.flowDocument;
             RenderSection();
         }
 
         private void CreateSection()
         {
-            var bodyNode = Utilities.GetNodesFromContent(Book.ReadingOrder[currentSectionIndex].Content);
+            bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
+            var bodyNode = bookViewModel.document.DocumentNode.SelectSingleNode("//body");
+
             var nodes = bodyNode.Descendants();
 
             sections[currentSectionIndex] = new Section();
@@ -49,7 +52,7 @@ namespace EPubReader.ViewModels
             foreach (var node in nodes)
             {
                 if (node.NodeType == HtmlNodeType.Element && node.ParentNode == bodyNode)
-                    Utilities.ParseNodes(node, sections[currentSectionIndex], Book, Images);
+                    bookViewModel.ParseNodes(node, sections[currentSectionIndex]);
             }
         }
 

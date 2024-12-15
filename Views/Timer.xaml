@@ -65,8 +65,8 @@
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Apply" BorderBrush="{StaticResource Border}" BorderThickness="1" Style="{StaticResource RoundButton}" Click="Apply_Click" />
-            <Button Content="Close" BorderBrush="{StaticResource Border}" BorderThickness="1" Style="{StaticResource RoundButton}" Click="Close_Click" />
+            <Button Content="Save" Width="70" Margin="5 5 10 5" Cursor="Hand" Click="Apply_Click"/>
+            <Button Content="Close" Width="70" Margin="0 5 5 5" Cursor="Hand" Click="Close_Click"/>
         </StackPanel>
     </Grid>
 </Window>

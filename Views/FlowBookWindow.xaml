@@ -9,13 +9,11 @@
         MinHeight="400" Height="450"
         MinWidth="700" Width="800">
     <DockPanel>
-        <TextBlock x:Name="TextTimer" DockPanel.Dock="Bottom" Margin="2 1 1 1">
-            <!--<Run Text="Reading time: 00:00"/>-->
-        </TextBlock>
+        <TextBlock x:Name="TimerText" DockPanel.Dock="Bottom" Margin="2 1 1 1" />
         <Menu DockPanel.Dock="Top">
             <MenuItem Cursor="Hand" Header="Chapters" Height="30" />
-            <MenuItem Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>
+            <MenuItem x:Name="OptionsMenuItem" Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>
         </Menu>
-        <FlowDocumentReader Name="flowDocumentReader" MaxZoom="300" ViewingMode="TwoPage" IsPageViewEnabled="False" />
+        <FlowDocumentReader Name="flowDocumentReader" MinZoom="100" MaxZoom="300" Zoom="150" ViewingMode="TwoPage" IsPageViewEnabled="False"></FlowDocumentReader>
     </DockPanel>
 </Window>

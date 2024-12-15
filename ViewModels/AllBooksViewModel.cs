@@ -17,17 +17,17 @@ namespace EPubReader.ViewModel
 {
     public class AllBooksViewModel : ObservableObject
     {
-        public ObservableCollection<Book> Books { get; set; }
+        public ObservableCollection<Book> books { get; set; }
 
         private Book _selectedBook;
-        public Book SelectedBook
+        public Book selectedBook
         {
             get { return _selectedBook; }
             set { _selectedBook = value; OnPropertyChanged(); }
         }
 
         private int _booksCounter;
-        public int BooksCounter
+        public int booksCounter
         {
             get { return _booksCounter; }
             set { _booksCounter = value; OnPropertyChanged(); }
@@ -37,12 +37,12 @@ namespace EPubReader.ViewModel
 
         private void BooksCount()
         {
-            BooksCounter = Books.Count;
+            booksCounter = books.Count;
         }
 
         public AllBooksViewModel()
         {
-            Books = new ObservableCollection<Book>();
+            books = new ObservableCollection<Book>();
             LoadFromJson("books.json");
             BooksCount();
 
@@ -57,7 +57,7 @@ namespace EPubReader.ViewModel
             if (ofd.ShowDialog() == true)
             {
                 book = EpubReader.ReadBook(ofd.FileName);
-                AddBookToJson(Books, book, ofd.FileName);
+                AddBookToJson(books, book, ofd.FileName);
             }
             BooksCount();
         }
@@ -75,7 +75,7 @@ namespace EPubReader.ViewModel
                     }
                     else if (selectedReader == 1)
                     {
-                        RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path);
+                        RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path, timer);
                         richTextBoxBookWindow.ShowDialog();
                     }
                 }
@@ -94,7 +94,7 @@ namespace EPubReader.ViewModel
         private void DeleteBook(object obj)
         {
             Book selectedBook = (Book)obj;
-            Books.Remove(selectedBook);
+            books.Remove(selectedBook);
             SaveJson("books.json");
             MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
             GarbageCollector();
@@ -110,9 +110,9 @@ namespace EPubReader.ViewModel
             }
         }
 
-        private void AddBookToJson(ObservableCollection<Book> Books, EpubBook book, string bookPath)
+        private void AddBookToJson(ObservableCollection<Book> books, EpubBook book, string bookPath)
         {
-            if (Books.Any(Book => Book.Title == book.Title))
+            if (books.Any(b => b.Title == book.Title))
             {
                 if (MessageBox.Show("There is already book with this title in the list, do you want to add it anyways?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes == false)
                 {
@@ -122,13 +122,13 @@ namespace EPubReader.ViewModel
 
             Book newBook = new Book()
             {
-                Id = Books.Count > 0 ? Books[Books.Count - 1].Id + 1 : 1,
+                Id = books.Count > 0 ? books[books.Count - 1].Id + 1 : 1,
                 Title = book.Title,
                 Description = book.Description,
                 Path = bookPath,
                 AddingDate = DateTime.Now.ToString("dd/MM/yyyy")
             };
-            Books.Add(newBook);
+            books.Add(newBook);
             
             SaveJson("books.json");
 
@@ -137,7 +137,7 @@ namespace EPubReader.ViewModel
 
         private void SaveJson(string jsonPath)
         {
-            string json = JsonConvert.SerializeObject(Books, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(books, Formatting.Indented);
             File.WriteAllText(jsonPath, json);
         }
 
@@ -146,7 +146,7 @@ namespace EPubReader.ViewModel
             if (File.Exists(jsonPath))
             {
                 string json = File.ReadAllText(jsonPath);
-                Books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(json);
+                books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(json);
             }
         }
 

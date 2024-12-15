@@ -18,9 +18,7 @@
         <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 10" Padding="10">
             <StackPanel>
                 <Label Content="Font family"/>
-                <ComboBox>
-                    <ComboBoxItem Content="Font nr 1"/>
-                </ComboBox>
+                <ComboBox Name="fontFamilyComboBox" Cursor="Hand" />
             </StackPanel>
         </Border>
         <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5 0 0 10" Padding="10">
@@ -34,8 +32,8 @@
             </StackPanel>
         </Border>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Save" Width="70" Margin="0 0 10 0"/>
-            <Button Content="Close" Width="70"/>
+            <Button Content="Save" Width="70" Margin="0 0 10 0" Click="SaveButton_Click"/>
+            <Button Content="Close" Width="70" Click="CloseButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

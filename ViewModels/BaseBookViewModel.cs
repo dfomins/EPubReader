@@ -1,31 +1,40 @@
-﻿using EPubReader.Models;
+﻿using EPubReader.Core;
+using EPubReader.Views;
 using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Media.Imaging;
-using System.Windows;
 using System.IO;
-using System.Windows.Controls;
-using VersOne.Epub;
-using System.Windows.Media;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using VersOne.Epub;
 
 namespace EPubReader.ViewModel
 {
-    public class Utilities
+    public class BaseBookViewModel : ObservableObject
     {
-        static public HtmlNode GetNodesFromContent(string Content)
+        public EpubBook book { get; }
+        public string bookTitle { get; }
+        public HtmlDocument document { get; } = new HtmlDocument();
+        private ICollection<EpubLocalByteContentFile> images { get; }
+        public FlowDocument flowDocument { get; } = new FlowDocument();
+
+        public BaseBookViewModel(string bookPath)
         {
-            HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(Content);
-            return document.DocumentNode.SelectSingleNode("//body");
+            book = EpubReader.ReadBook(bookPath);
+            bookTitle = book.Title;
+            images = book.Content.Images.Local;
+            flowDocument.ColumnWidth = double.PositiveInfinity;
         }
 
-        static public void ParseNodes(HtmlNode node, Section section, EpubBook book, ICollection<EpubLocalByteContentFile> Images)
+        /// <summary>
+        /// Handles each HTML node in a specific section
+        /// </summary>
+        public void ParseNodes(HtmlNode node, Section section, int fontSize = 24)
         {
             switch (node.Name)
             {
@@ -35,7 +44,7 @@ namespace EPubReader.ViewModel
                     foreach (var childNode in childNodes)
                     {
                         if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
-                            ParseNodes(childNode, section, book, Images);
+                            ParseNodes(childNode, section);
                     }
                     return;
 
@@ -60,7 +69,6 @@ namespace EPubReader.ViewModel
                 case "h1":
                     Paragraph headerParagraph = new Paragraph(new Run(node.InnerText))
                     {
-                        FontSize = 24,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center,
                         BreakPageBefore = true
@@ -72,7 +80,6 @@ namespace EPubReader.ViewModel
                 case "h2":
                     headerParagraph = new Paragraph(new Run(node.InnerText))
                     {
-                        FontSize = 20,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center,
                         BreakPageBefore = true
@@ -84,7 +91,6 @@ namespace EPubReader.ViewModel
                 case "h3":
                     section.Blocks.Add(new Paragraph(new Run(node.InnerText))
                     {
-                        FontSize = 18,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center
                     });
@@ -92,9 +98,9 @@ namespace EPubReader.ViewModel
 
                 case "img":
                     string fileName = node.Attributes["src"].Value;
-                    if (fileName != null && Images != null)
+                    if (fileName != null && images != null)
                     {
-                        var imageItem = Images.FirstOrDefault(x => x.Key == fileName);
+                        var imageItem = images.FirstOrDefault(x => x.Key == fileName);
                         BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
 
                         Image image = new Image
@@ -126,7 +132,10 @@ namespace EPubReader.ViewModel
             }
         }
 
-        static private BitmapImage CreateBitmapFromBytes(byte[] imageBytes)
+        /// <summary>
+        /// Creates an image from byte array
+        /// </summary>
+        private BitmapImage CreateBitmapFromBytes(byte[] imageBytes)
         {
             BitmapImage bitmap = new BitmapImage();
             using (MemoryStream stream = new MemoryStream(imageBytes))
