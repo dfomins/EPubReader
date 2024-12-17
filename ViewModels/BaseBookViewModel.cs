@@ -1,4 +1,5 @@
-﻿using EPubReader.Core;
+﻿using EPubReader.Commands;
+using EPubReader.Core;
 using EPubReader.Views;
 using HtmlAgilityPack;
 using System.IO;
@@ -22,6 +23,10 @@ namespace EPubReader.ViewModel
         public HtmlDocument document { get; } = new HtmlDocument();
         private ICollection<EpubLocalByteContentFile> images { get; }
         public FlowDocument flowDocument { get; } = new FlowDocument();
+        public ICommand OptionsCommand { get; set; }
+        public string selectedFontFamily { get; set; }
+        string[] fontsNameList { get; }
+
 
         public BaseBookViewModel(string bookPath)
         {
@@ -29,12 +34,37 @@ namespace EPubReader.ViewModel
             bookTitle = book.Title;
             images = book.Content.Images.Local;
             flowDocument.ColumnWidth = double.PositiveInfinity;
+
+            OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
+            // Loads all system fonts for options window
+            var allSystemFonts = Fonts.SystemFontFamilies.ToArray();
+            fontsNameList = new string[allSystemFonts.Length];
+            for (int i = 0; i < allSystemFonts.Length; i++)
+            {
+                fontsNameList[i] = allSystemFonts[i].Source;
+            }
+            //
+        }
+
+        private bool CanOpenOptionsWindow(object obj)
+        {
+            return true;
+        }
+
+        private void OpenOptionsWindow(object obj)
+        {
+            Options options = new Options(flowDocument.FontFamily.Source, fontsNameList);
+            if (options.ShowDialog() == true)
+            {
+                selectedFontFamily = options.selectedFontFamily.Source;
+                flowDocument.FontFamily = new FontFamily(selectedFontFamily);
+            }
         }
 
         /// <summary>
         /// Handles each HTML node in a specific section
         /// </summary>
-        public void ParseNodes(HtmlNode node, Section section, int fontSize = 24)
+        public void ParseNodes(HtmlNode node, Section section, int fontSize = 18)
         {
             switch (node.Name)
             {
@@ -44,7 +74,7 @@ namespace EPubReader.ViewModel
                     foreach (var childNode in childNodes)
                     {
                         if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
-                            ParseNodes(childNode, section);
+                            ParseNodes(childNode, section, fontSize);
                     }
                     return;
 
@@ -53,7 +83,11 @@ namespace EPubReader.ViewModel
                 case "#text":
                 case "p":
                     string textWithoutEnters = node.InnerText.Replace("\n", " ").Replace("\r", " ");
-                    Paragraph text = new Paragraph(new Run(textWithoutEnters));
+                    Paragraph text = new Paragraph(new Run(textWithoutEnters)
+                    {
+                        FontSize = fontSize
+                    });
+
                     if (node.Name == "p")
                     {
                         text.TextIndent = 20;
@@ -69,6 +103,7 @@ namespace EPubReader.ViewModel
                 case "h1":
                     Paragraph headerParagraph = new Paragraph(new Run(node.InnerText))
                     {
+                        FontSize = fontSize + 4,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center,
                         BreakPageBefore = true
@@ -80,6 +115,7 @@ namespace EPubReader.ViewModel
                 case "h2":
                     headerParagraph = new Paragraph(new Run(node.InnerText))
                     {
+                        FontSize = fontSize + 2,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center,
                         BreakPageBefore = true
@@ -91,6 +127,7 @@ namespace EPubReader.ViewModel
                 case "h3":
                     section.Blocks.Add(new Paragraph(new Run(node.InnerText))
                     {
+                        FontSize = fontSize,
                         FontWeight = FontWeights.Bold,
                         TextAlignment = TextAlignment.Center
                     });

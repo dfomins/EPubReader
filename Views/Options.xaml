@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
         mc:Ignorable="d"
-        Title="Options" Height="400" Width="700" ResizeMode="NoResize">
+        Title="Options" Height="400" Width="700"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
@@ -18,10 +19,12 @@
         <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 10" Padding="10">
             <StackPanel>
                 <Label Content="Font family"/>
-                <ComboBox Name="fontFamilyComboBox" Cursor="Hand" />
+                <ComboBox Name="fontFamilyComboBox" Cursor="Hand" SelectionChanged="fontFamilyComboBox_SelectionChanged"/>
+                <Label Content="Preview:" Margin="0 5 0 0" />
+                <Label x:Name="fontPrieviewTextBlock" FontSize="18"/>
             </StackPanel>
         </Border>
-        <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5 0 0 10" Padding="10">
+        <Border x:Name="fontFamilySettingsBlock" Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5 0 0 10" Padding="10">
             <StackPanel>
                 <Label Content="Font family"/>
                 <ListBox>

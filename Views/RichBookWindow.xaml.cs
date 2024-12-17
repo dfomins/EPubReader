@@ -34,6 +34,7 @@ namespace EPubReader.Views
             InitializeComponent();
             this.seconds = seconds;
             richBookViewModel = new RReaderBookViewModel(BookPath);
+            this.DataContext = richBookViewModel;
             richBookWindow.Title = richBookViewModel.bookTitle;
             ClearRichTextBoxIfNotEmpty();
             richTextBox.Document = richBookViewModel.flowDocument;

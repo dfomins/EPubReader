@@ -7,7 +7,10 @@
         mc:Ignorable="d"
         Title="RichTextBoxBookWindow" Height="450" Width="800">
     <DockPanel>
-        <DockPanel DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Options" Cursor="Hand" Command="{Binding OptionsCommand}" />
+        </Menu>
+        <!--<DockPanel DockPanel.Dock="Top">
             <Border BorderThickness="0 0 0 1" BorderBrush="Gray">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -28,7 +31,7 @@
                     </StackPanel>
                 </DockPanel>
             </Border>
-        </DockPanel>
+        </DockPanel>-->
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />

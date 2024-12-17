@@ -16,31 +16,16 @@ namespace EPubReader.ViewModels
         public string BookTitle { get; }
         public FlowDocument flowDocument { get; }
         public ICommand OptionsCommand { get; set; }
-        public string selectedFontFamily { get; set; }
 
         public FReaderBookViewModel(string bookPath)
         {
             bookViewModel = new BaseBookViewModel(bookPath);
             BookTitle = bookViewModel.bookTitle;
             flowDocument = bookViewModel.flowDocument;
-            OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
+
+            OptionsCommand = bookViewModel.OptionsCommand;
 
             LoadBookContent();
-        }
-
-        private bool CanOpenOptionsWindow(object obj)
-        {
-            return true;
-        }
-
-        private void OpenOptionsWindow(object obj)
-        {
-            Options options = new Options(flowDocument.FontFamily.Source);
-            if (options.ShowDialog() == true)
-            {
-                selectedFontFamily = options.selectedFontFamily;
-                flowDocument.FontFamily = new FontFamily(selectedFontFamily);
-            }
         }
 
         private void LoadBookContent()

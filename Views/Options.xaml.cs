@@ -21,29 +21,33 @@ namespace EPubReader.Views
     /// </summary>
     public partial class Options : Window
     {
-        public string selectedFontFamily { get; set; }
+        public FontFamily selectedFontFamily { get; set; }
+        string currentFont { get; }
+        string selectedFont { get; }
 
-        public Options(string CurrentFont)
+        public Options(string currentFont, string[] fontsNameList)
         {
             InitializeComponent();
 
-            fontFamilyComboBox.SelectedItem = CurrentFont;
-
-            var allSystemFonts = Fonts.SystemFontFamilies.ToArray();
-            string[] fontsNameList = new string[allSystemFonts.Length];
-            for (int i = 0; i < allSystemFonts.Length; i++)
-            {
-                fontsNameList[i] = allSystemFonts[i].Source;
-            }
+            this.currentFont = currentFont;
+            fontFamilyComboBox.SelectedItem = this.currentFont;
+            fontPrieviewTextBlock.FontFamily = new FontFamily(this.currentFont);
 
             fontFamilyComboBox.ItemsSource = fontsNameList;
+        }
+
+        private void fontFamilyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedFontFamily = new FontFamily(Convert.ToString(fontFamilyComboBox.SelectedItem));
+            fontPrieviewTextBlock.Content = selectedFontFamily.Source;
+            fontPrieviewTextBlock.FontFamily = selectedFontFamily;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (fontFamilyComboBox.SelectedItem != null)
             {
-                selectedFontFamily = Convert.ToString(fontFamilyComboBox.SelectedItem);
+                selectedFontFamily = selectedFontFamily;
                 DialogResult = true;
             }
             Close();

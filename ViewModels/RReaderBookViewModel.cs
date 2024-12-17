@@ -28,6 +28,7 @@ namespace EPubReader.ViewModels
         private Section[] sections { get; }
         public int currentSectionIndex { get; set; } = 0;
         public FlowDocument flowDocument { get; }
+        public ICommand OptionsCommand { get; set; }
 
         public RReaderBookViewModel(string BookPath)
         {
@@ -37,6 +38,7 @@ namespace EPubReader.ViewModels
             chaptersCount = readingOrder.Count;
             sections = new Section[chaptersCount];
             flowDocument = bookViewModel.flowDocument;
+            OptionsCommand = bookViewModel.OptionsCommand;
             RenderSection();
         }
 
