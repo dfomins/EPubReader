@@ -19,19 +19,24 @@
         <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 10" Padding="10">
             <StackPanel>
                 <Label Content="Font family"/>
-                <ComboBox Name="fontFamilyComboBox" Cursor="Hand" SelectionChanged="fontFamilyComboBox_SelectionChanged"/>
+                <ComboBox Name="fontFamilySelect" Cursor="Hand" SelectionChanged="fontFamilyComboBox_SelectionChanged"/>
                 <Label Content="Preview:" Margin="0 5 0 0" />
-                <Label x:Name="fontPrieviewTextBlock" FontSize="18"/>
+                <Label x:Name="fontPrieviewLabel" FontSize="18"/>
             </StackPanel>
         </Border>
         <Border x:Name="fontFamilySettingsBlock" Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="5 0 0 10" Padding="10">
             <StackPanel>
-                <Label Content="Font family"/>
-                <ListBox>
+                <Label Content="Font size"/>
+                <ListBox x:Name="fontSizeSelect">
                     <ListBoxItem Content="8"/>
                     <ListBoxItem Content="10"/>
                     <ListBoxItem Content="12"/>
+                    <ListBoxItem Content="14"/>
+                    <ListBoxItem Content="16"/>
+                    <ListBoxItem Content="18"/>
+                    <ListBoxItem Content="20" />
                 </ListBox>
+                <Label x:Name="currentFontSizeLabel"/>
             </StackPanel>
         </Border>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">

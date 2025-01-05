@@ -3,15 +3,13 @@ using EPubReader.Core;
 using EPubReader.Views;
 using HtmlAgilityPack;
 using System.IO;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using System.Windows.Navigation;
 using VersOne.Epub;
 
 namespace EPubReader.ViewModel
@@ -19,23 +17,22 @@ namespace EPubReader.ViewModel
     public class BaseBookViewModel : ObservableObject
     {
         public EpubBook book { get; }
+        public List<EpubNavigationItem> bookChapters { get; }
         public string bookTitle { get; }
         public HtmlDocument document { get; } = new HtmlDocument();
         private ICollection<EpubLocalByteContentFile> images { get; }
         public FlowDocument flowDocument { get; } = new FlowDocument();
-        public ICommand OptionsCommand { get; set; }
         public string selectedFontFamily { get; set; }
         string[] fontsNameList { get; }
-
 
         public BaseBookViewModel(string bookPath)
         {
             book = EpubReader.ReadBook(bookPath);
+            bookChapters = book.Navigation.ToList();
             bookTitle = book.Title;
             images = book.Content.Images.Local;
             flowDocument.ColumnWidth = double.PositiveInfinity;
 
-            OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             // Loads all system fonts for options window
             var allSystemFonts = Fonts.SystemFontFamilies.ToArray();
             fontsNameList = new string[allSystemFonts.Length];
@@ -46,14 +43,36 @@ namespace EPubReader.ViewModel
             //
         }
 
-        private bool CanOpenOptionsWindow(object obj)
+        /// <summary>
+        /// Handles all nodes, parse them and then return as section
+        /// </summary>
+        public Section CreateSection(int fontSize = 18)
         {
-            return true;
+            Section section = new Section();
+            try
+            {
+                HtmlNode bodyNode = document.DocumentNode.SelectSingleNode("//body");
+                IEnumerable<HtmlNode> nodes = bodyNode.Descendants();
+
+                foreach (var node in nodes)
+                {
+                    if (node.NodeType == HtmlNodeType.Element && !string.IsNullOrWhiteSpace(node.InnerHtml) && node.ParentNode == bodyNode)
+                        ParseNodes(node, section, fontSize);
+                }
+            } catch (Exception)
+            {
+                MessageBox.Show("The file format is probably too old, it is not possible to run the reader", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
+            return section;
         }
 
-        private void OpenOptionsWindow(object obj)
+        ///// <summary>
+        ///// Opens options window with font and font size settings
+        ///// </summary>
+        public void OpenOptionsWindow(bool fontSize)
         {
-            Options options = new Options(flowDocument.FontFamily.Source, fontsNameList);
+            Options options = new Options(flowDocument.FontFamily.Source, fontsNameList, fontSize);
             if (options.ShowDialog() == true)
             {
                 selectedFontFamily = options.selectedFontFamily.Source;
@@ -64,25 +83,15 @@ namespace EPubReader.ViewModel
         /// <summary>
         /// Handles each HTML node in a specific section
         /// </summary>
-        public void ParseNodes(HtmlNode node, Section section, int fontSize = 18)
+        public void ParseNodes(HtmlNode node, Section section, int fontSize)
         {
             switch (node.Name)
             {
-                case "section":
-                case "div":
-                    var childNodes = node.ChildNodes;
-                    foreach (var childNode in childNodes)
-                    {
-                        if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
-                            ParseNodes(childNode, section, fontSize);
-                    }
-                    return;
-
                 case "a":
                 case "strong":
                 case "#text":
                 case "p":
-                    string textWithoutEnters = node.InnerText.Replace("\n", " ").Replace("\r", " ");
+                    string textWithoutEnters = node.InnerText.Replace("\n", null).Replace("\r", null);
                     Paragraph text = new Paragraph(new Run(textWithoutEnters)
                     {
                         FontSize = fontSize
@@ -92,7 +101,8 @@ namespace EPubReader.ViewModel
                     {
                         text.TextIndent = 20;
                     }
-                    else if (node.Name == "strong")
+
+                    if (node.Name == "strong")
                     {
                         text.FontWeight = FontWeights.Bold;
                     }
@@ -147,13 +157,13 @@ namespace EPubReader.ViewModel
 
                         if (fileName == book.Content?.Cover?.Key)
                         {
-                            image.MaxHeight = bitmapImage.Height * 2;
+                            image.MaxHeight = 1000;
                             Thickness thicc = new Thickness(0, 0, 0, 40);
                             image.Margin = thicc;
                         }
                         else
                         {
-                            image.MaxWidth = bitmapImage.Width;
+                            image.MaxHeight = 250;
                         }
 
                         Paragraph paragraph = new Paragraph()
@@ -166,6 +176,15 @@ namespace EPubReader.ViewModel
                         section.Blocks.Add(paragraph);
                     }
                     break;
+
+                default:
+                    var childNodes = node.ChildNodes;
+                    foreach (var childNode in childNodes)
+                    {
+                        if ((childNode.InnerHtml).Trim() != "" || childNode.Name == "img")
+                            ParseNodes(childNode, section, fontSize);
+                    }
+                    return;
             }
         }
 

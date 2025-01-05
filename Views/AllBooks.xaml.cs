@@ -69,5 +69,11 @@ namespace EPubReader.Views
             Book[] searchedBooks = booksViewModel.books.Where(Book => Book.Title.ToLower().Contains(searchText.ToLower())).ToArray();
             booksListBox.ItemsSource = searchedBooks;
         }
+
+        private void ClickButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchBox.Clear();
+            SearchButton_Click(sender, e);
+        }
     }
 }

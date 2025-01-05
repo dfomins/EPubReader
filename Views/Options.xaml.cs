@@ -22,34 +22,51 @@ namespace EPubReader.Views
     public partial class Options : Window
     {
         public FontFamily selectedFontFamily { get; set; }
-        string currentFont { get; }
-        string selectedFont { get; }
+        private string currentFont { get; }
+        private string selectedFont { get; }
+        private bool fontSizeChangable { get; }
 
-        public Options(string currentFont, string[] fontsNameList)
+        public Options(string currentFont, string[] fontsNameList, bool fontSizeChangable, int currentFontSize = 18)
         {
             InitializeComponent();
 
-            this.currentFont = currentFont;
-            fontFamilyComboBox.SelectedItem = this.currentFont;
-            fontPrieviewTextBlock.FontFamily = new FontFamily(this.currentFont);
+            this.fontSizeChangable = fontSizeChangable;
 
-            fontFamilyComboBox.ItemsSource = fontsNameList;
+            if (!this.fontSizeChangable)
+            {
+                fontFamilySettingsBlock.Visibility = Visibility.Collapsed;
+            } else
+            {
+                currentFontSizeLabel.Content = "Current font size: " + currentFontSize;
+            }
+
+            this.currentFont = currentFont;
+            fontFamilySelect.SelectedItem = this.currentFont;
+            fontPrieviewLabel.FontFamily = new FontFamily(this.currentFont);
+
+            fontFamilySelect.ItemsSource = fontsNameList;
         }
 
         private void fontFamilyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            selectedFontFamily = new FontFamily(Convert.ToString(fontFamilyComboBox.SelectedItem));
-            fontPrieviewTextBlock.Content = selectedFontFamily.Source;
-            fontPrieviewTextBlock.FontFamily = selectedFontFamily;
+            selectedFontFamily = new FontFamily(Convert.ToString(fontFamilySelect.SelectedItem));
+            fontPrieviewLabel.Content = selectedFontFamily.Source;
+            fontPrieviewLabel.FontFamily = selectedFontFamily;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (fontFamilyComboBox.SelectedItem != null)
+            if (fontFamilySelect.SelectedItem != null)
             {
                 selectedFontFamily = selectedFontFamily;
                 DialogResult = true;
             }
+
+            if (fontSizeChangable && fontSizeSelect.SelectedItem != null)
+            {
+                MessageBox.Show(fontSizeSelect.SelectedItem.ToString());
+            }
+
             Close();
         }
 

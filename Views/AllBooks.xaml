@@ -38,15 +38,17 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" />
-                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="SearchBox" Margin="5 5 0 5" Padding="3 0" Style="{StaticResource SearchInput}" />
                     <Label Content="Search for book..." IsHitTestVisible="False" Margin="5" VerticalAlignment="Center" Visibility="{Binding Text.IsEmpty, ElementName=SearchBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Grid.Column="1" Margin="5" Padding="5" Cursor="Hand" Click="SearchButton_Click">
+                    <Button Grid.Column="1" Style="{StaticResource RoundButton}" Margin="5" Padding="5" Cursor="Hand" Click="SearchButton_Click">
                         <Viewbox>
                             <Path Data="{StaticResource SearchIcon}" Fill="Black"/>
                         </Viewbox>
                     </Button>
+                    <Button Grid.Column="2" Style="{StaticResource RoundButton}" Content="Clear" Margin="0 5 5 5" Padding="5" Cursor="Hand" Click="ClickButton_Click" />
                 </Grid>
                     <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
                         <ListBox.ItemTemplate>
