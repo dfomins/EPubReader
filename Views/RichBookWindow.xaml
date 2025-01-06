@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EPubReader.Views"
-        xmlns:numeric="clr-namespace:Gu.Wpf.NumericInput;assembly=Gu.Wpf.NumericInput"
         mc:Ignorable="d"
         Title="RichTextBoxBookWindow" MinHeight="400" Height="450" MinWidth="700" Width="800">
     <DockPanel>
