@@ -32,7 +32,7 @@
                     <RowDefinition/>
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="Gray">
+                <Border Name="buttonsPanel" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="Gray">
                     <DockPanel HorizontalAlignment="Center">
                         <Button DockPanel.Dock="Left" Content="Prev" Padding="30 10" Margin="15 10" Cursor="Hand" Background="White" Command="{Binding PrevPageCommand}">
                             <Button.Resources>

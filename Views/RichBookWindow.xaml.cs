@@ -1,6 +1,8 @@
 ﻿using EPubReader.ViewModels;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace EPubReader.Views
@@ -26,6 +28,7 @@ namespace EPubReader.Views
             richTextBox.Document = richBookViewModel.flowDocument;
             bookChaptersListBox.ItemsSource = richBookViewModel.bookChapters;
             richBookViewModel.ClearRichTextBox += ClearRichTextBoxIfNotEmpty;
+            richBookViewModel.ChangeColorTheme += SetThemeColor;
 
             if (seconds > 0)
             {
@@ -45,12 +48,32 @@ namespace EPubReader.Views
             counter++;
             if (counter >= seconds)
             {
-                MessageBox.Show("Time ended!");
+                MessageBox.Show("Time ended!", "Timer");
                 dispatcherTimer.Stop();
             }
             TimeSpan timer = TimeSpan.FromSeconds(seconds);
             TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
             TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
+        }
+
+        private void SetThemeColor(int themeColor)
+        {
+            if (themeColor == 0)
+            {
+                bookChaptersListBox.Background = Brushes.White;
+                bookChaptersListBox.Foreground = Brushes.Black;
+                buttonsPanel.Background = Brushes.White;
+                richTextBox.Background = Brushes.White;
+                richTextBox.Foreground = Brushes.Black;
+            }
+            else if (themeColor == 1)
+            {
+                bookChaptersListBox.Background = Brushes.Black;
+                bookChaptersListBox.Foreground = Brushes.White;
+                buttonsPanel.Background = Brushes.Black;
+                richTextBox.Background = Brushes.Black;
+                richTextBox.Foreground = Brushes.White;
+            }
         }
 
         private void ClearRichTextBoxIfNotEmpty()
@@ -62,6 +85,7 @@ namespace EPubReader.Views
             }
         }
 
+        //test
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show(sender.ToString());

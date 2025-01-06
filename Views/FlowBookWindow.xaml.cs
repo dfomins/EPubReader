@@ -41,7 +41,7 @@ namespace EPubReader.Views
             counter++;
             if (counter >= seconds)
             {
-                MessageBox.Show("Time ended!");
+                MessageBox.Show("Time ended!", "Timer");
                 dispatcherTimer.Stop();
             }
             TimeSpan timer = TimeSpan.FromSeconds(seconds);

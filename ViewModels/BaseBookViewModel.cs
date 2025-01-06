@@ -1,15 +1,10 @@
-﻿using EPubReader.Commands;
-using EPubReader.Core;
-using EPubReader.Views;
+﻿using EPubReader.Core;
 using HtmlAgilityPack;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using VersOne.Epub;
 
 namespace EPubReader.ViewModel
@@ -22,8 +17,6 @@ namespace EPubReader.ViewModel
         public HtmlDocument document { get; } = new HtmlDocument();
         private ICollection<EpubLocalByteContentFile> images { get; }
         public FlowDocument flowDocument { get; } = new FlowDocument();
-        public string selectedFontFamily { get; set; }
-        string[] fontsNameList { get; }
 
         public BaseBookViewModel(string bookPath)
         {
@@ -32,15 +25,6 @@ namespace EPubReader.ViewModel
             bookTitle = book.Title;
             images = book.Content.Images.Local;
             flowDocument.ColumnWidth = double.PositiveInfinity;
-
-            // Loads all system fonts for options window
-            var allSystemFonts = Fonts.SystemFontFamilies.ToArray();
-            fontsNameList = new string[allSystemFonts.Length];
-            for (int i = 0; i < allSystemFonts.Length; i++)
-            {
-                fontsNameList[i] = allSystemFonts[i].Source;
-            }
-            //
         }
 
         /// <summary>
@@ -65,19 +49,6 @@ namespace EPubReader.ViewModel
                 Environment.Exit(0);
             }
             return section;
-        }
-
-        ///// <summary>
-        ///// Opens options window with font and font size settings
-        ///// </summary>
-        public void OpenOptionsWindow(bool fontSize)
-        {
-            Options options = new Options(flowDocument.FontFamily.Source, fontsNameList, fontSize);
-            if (options.ShowDialog() == true)
-            {
-                selectedFontFamily = options.selectedFontFamily.Source;
-                flowDocument.FontFamily = new FontFamily(selectedFontFamily);
-            }
         }
 
         /// <summary>

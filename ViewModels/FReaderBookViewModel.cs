@@ -2,8 +2,6 @@
 using EPubReader.Core;
 using EPubReader.ViewModel;
 using EPubReader.Views;
-using HtmlAgilityPack;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,6 +15,7 @@ namespace EPubReader.ViewModels
         public List<EpubNavigationItem> bookChapters { get; }
         public string BookTitle { get; }
         public FlowDocument flowDocument { get; }
+        private int themeColor { get; set; }
         public ICommand OptionsCommand { get; }
         public ICommand ChaptersCommand { get; }
 
@@ -27,7 +26,6 @@ namespace EPubReader.ViewModels
             BookTitle = bookViewModel.bookTitle;
             flowDocument = bookViewModel.flowDocument;
 
-            //OptionsCommand = bookViewModel.OptionsCommand;
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             ChaptersCommand = new RelayCommand(OpenChaptersWindow, CanOpenChaptersWindow);
 
@@ -51,11 +49,26 @@ namespace EPubReader.ViewModels
         }
 
         /// <summary>
-        /// Opens options window with font and font size settings
+        /// Opens options window with font family settings
         /// </summary>
         private void OpenOptionsWindow(object obj)
         {
-            bookViewModel.OpenOptionsWindow(false);
+            Options options = new Options(flowDocument.FontFamily, false, 18, themeColor);
+            if (options.ShowDialog() == true)
+            {
+                flowDocument.FontFamily = new FontFamily(options.fontFamily.Source);
+                themeColor = options.themeColor;
+            }
+            if (options.themeColor == 0)
+            {
+                flowDocument.Background = Brushes.White;
+                flowDocument.Foreground = Brushes.Black;
+            }
+            else if (options.themeColor == 1)
+            {
+                flowDocument.Background = Brushes.Black;
+                flowDocument.Foreground = Brushes.White;
+            }
         }
 
         private void LoadBookContent()

@@ -1,18 +1,6 @@
-﻿using EPubReader.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace EPubReader.Views
 {
@@ -21,52 +9,69 @@ namespace EPubReader.Views
     /// </summary>
     public partial class Options : Window
     {
-        public FontFamily selectedFontFamily { get; set; }
-        private string currentFont { get; }
-        private string selectedFont { get; }
-        private bool fontSizeChangable { get; }
+        // Font family
+        public FontFamily fontFamily { get; set; }
+        // Is font size changable? (For RichTextBox reader - yes, FlowDocumentReader - no)
+        private bool isFontSizeChangable { get; }
+        // Font size
+        public int fontSize { get; set; }
+        // Color theme
+        public int themeColor { get; set; }
 
-        public Options(string currentFont, string[] fontsNameList, bool fontSizeChangable, int currentFontSize = 18)
+        public Options(FontFamily currentFontFamily, bool isFontSizeChangable, int currentFontSize = 18, int currentThemeColor = 0)
         {
             InitializeComponent();
 
-            this.fontSizeChangable = fontSizeChangable;
+            // Generates system fonts list
+            FontFamily[] allSystemFonts = System.Windows.Media.Fonts.SystemFontFamilies.ToArray();
+            List<string> fontsNameList = new List<string>();
+            fontsNameList.AddRange(allSystemFonts.Select(font => font.Source));
 
-            if (!this.fontSizeChangable)
+            // Font family
+            fontFamilySelect.ItemsSource = fontsNameList;
+            fontFamily = currentFontFamily;
+            fontFamilySelect.SelectedItem = this.fontFamily.Source;
+            fontPrieviewLabel.FontFamily = new FontFamily(this.fontFamily.Source);
+
+            // Font size
+            this.isFontSizeChangable = isFontSizeChangable;
+            fontSize = currentFontSize;
+
+            if (!this.isFontSizeChangable)
             {
                 fontFamilySettingsBlock.Visibility = Visibility.Collapsed;
-            } else
+            }
+            else
             {
-                currentFontSizeLabel.Content = "Current font size: " + currentFontSize;
+                currentFontSizeLabel.Content = "Current font size: " + fontSize;
             }
 
-            this.currentFont = currentFont;
-            fontFamilySelect.SelectedItem = this.currentFont;
-            fontPrieviewLabel.FontFamily = new FontFamily(this.currentFont);
-
-            fontFamilySelect.ItemsSource = fontsNameList;
+            // Color theme
+            colorThemeSelect.SelectedIndex = currentThemeColor;
         }
 
         private void fontFamilyComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            selectedFontFamily = new FontFamily(Convert.ToString(fontFamilySelect.SelectedItem));
-            fontPrieviewLabel.Content = selectedFontFamily.Source;
-            fontPrieviewLabel.FontFamily = selectedFontFamily;
+            fontFamily = new FontFamily(Convert.ToString(fontFamilySelect.SelectedItem));
+            fontPrieviewLabel.Content = fontFamily.Source;
+            fontPrieviewLabel.FontFamily = fontFamily;
+        }
+
+        private void colorThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            themeColor = colorThemeSelect.SelectedIndex;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (fontFamilySelect.SelectedItem != null)
+            var selectedItem = fontSizeSelect.SelectedItem as ListBoxItem;
+
+            if (isFontSizeChangable && selectedItem != null)
             {
-                selectedFontFamily = selectedFontFamily;
-                DialogResult = true;
+                fontSize = Convert.ToInt32(selectedItem.Content);
             }
 
-            if (fontSizeChangable && fontSizeSelect.SelectedItem != null)
-            {
-                MessageBox.Show(fontSizeSelect.SelectedItem.ToString());
-            }
-
+            DialogResult = true;
             Close();
         }
 

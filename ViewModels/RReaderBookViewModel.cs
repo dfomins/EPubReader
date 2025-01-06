@@ -1,10 +1,13 @@
 ﻿using EPubReader.Commands;
 using EPubReader.Core;
 using EPubReader.ViewModel;
+using EPubReader.Views;
 using HtmlAgilityPack;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using VersOne.Epub;
 
 namespace EPubReader.ViewModels
@@ -30,11 +33,12 @@ namespace EPubReader.ViewModels
                 (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
-        //public int currentSectionIndex { get; set; } = 0;
         public FlowDocument flowDocument { get; }
+        private int themeColor { get; set; }
         public ICommand PrevPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand OptionsCommand { get; set; }
+        private int fontSize { get; set; } = 18;
 
         public RReaderBookViewModel(string BookPath)
         {
@@ -87,29 +91,47 @@ namespace EPubReader.ViewModels
             return true;
         }
 
+        public event Action<int> ChangeColorTheme;
         /// <summary>
-        /// Opens options window with font and font size settings
+        /// Opens options window with font family and font size settings
         /// </summary>
         private void OpenOptionsWindow(object obj)
         {
-            bookViewModel.OpenOptionsWindow(true);
+            Options options = new Options(flowDocument.FontFamily, true, fontSize, themeColor);
+            if (options.ShowDialog() == true)
+            {
+                flowDocument.FontFamily = new FontFamily(options.fontFamily.Source);
+                fontSize = options.fontSize;
+                themeColor = options.themeColor;
+                if (options.themeColor == 0)
+                {
+                    ChangeColorTheme?.Invoke(0);
+                }
+                else if (options.themeColor == 1)
+                {
+                    ChangeColorTheme?.Invoke(1);
+                }
+                RenderSection();
+            }
         }
 
-        private void CreateSection()
-        {
-            bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
-            sections[currentSectionIndex] = bookViewModel.CreateSection();
-        }
-
-        private void UpdateSection()
-        {
-            flowDocument.Blocks.Add(sections[currentSectionIndex]);
-        }
 
         public void RenderSection()
         {
             CreateSection();
             UpdateSection();
+        }
+
+        private void CreateSection()
+        {
+            ClearRichTextBoxIfNotEmpty();
+            bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
+            sections[currentSectionIndex] = bookViewModel.CreateSection(fontSize);
+        }
+
+        private void UpdateSection()
+        {
+            flowDocument.Blocks.Add(sections[currentSectionIndex]);
         }
 
         public void ChangeSection(int direction)
@@ -120,7 +142,6 @@ namespace EPubReader.ViewModels
         }
 
         public event Action ClearRichTextBox;
-
         private void ClearRichTextBoxIfNotEmpty()
         {
             ClearRichTextBox?.Invoke();
