@@ -34,11 +34,11 @@ namespace EPubReader.ViewModels
             }
         }
         public FlowDocument flowDocument { get; }
+        private int fontSize { get; set; } = 18;
         private int themeColor { get; set; }
         public ICommand PrevPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand OptionsCommand { get; set; }
-        private int fontSize { get; set; } = 18;
 
         public RReaderBookViewModel(string BookPath)
         {

@@ -60,17 +60,11 @@ namespace EPubReader.Views
         {
             if (themeColor == 0)
             {
-                bookChaptersListBox.Background = Brushes.White;
-                bookChaptersListBox.Foreground = Brushes.Black;
-                buttonsPanel.Background = Brushes.White;
                 richTextBox.Background = Brushes.White;
                 richTextBox.Foreground = Brushes.Black;
             }
             else if (themeColor == 1)
             {
-                bookChaptersListBox.Background = Brushes.Black;
-                bookChaptersListBox.Foreground = Brushes.White;
-                buttonsPanel.Background = Brushes.Black;
                 richTextBox.Background = Brushes.Black;
                 richTextBox.Foreground = Brushes.White;
             }
