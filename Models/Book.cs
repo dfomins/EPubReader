@@ -15,16 +15,16 @@ namespace EPubReader.Models
             get { return System.IO.Path.Combine(bookCoversDirectory, $"{Id}.png"); }
         }
         public string AddingDate { get; set; } = string.Empty;
-        private bool _isBookmark;
-        public bool IsBookmark
+        private bool _isFavorite;
+        public bool IsFavorite
         {
-            get { return _isBookmark; }
+            get { return _isFavorite; }
             set
             {
-                if (_isBookmark != value)
+                if (_isFavorite != value)
                 {
-                    _isBookmark = value;
-                    OnPropertyChanged(nameof(IsBookmark));
+                    _isFavorite = value;
+                    OnPropertyChanged(nameof(IsFavorite));
                 }
             }
         }

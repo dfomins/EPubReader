@@ -38,7 +38,7 @@ namespace EPubReader.ViewModel
 
         // Commmands
         public ICommand AddNewBookCommand { get; set; }
-        public ICommand AddToBookmarksCommand { get; set; }
+        public ICommand ChangeFavoriteCommand { get; set; }
         public ICommand DeleteBookCommand { get; set; }
 
         public AllBooksViewModel()
@@ -49,7 +49,7 @@ namespace EPubReader.ViewModel
             BooksCount();
 
             AddNewBookCommand = new RelayCommand(AddNewBook, CanAddNewBook);
-            AddToBookmarksCommand = new RelayCommand(ChangeBookmark, CanChangeBookmark);
+            ChangeFavoriteCommand = new RelayCommand(ChangeFavorite, CanChangeFavorite);
             DeleteBookCommand = new RelayCommand(DeleteBook, CanDeleteBook);
         }
 
@@ -59,7 +59,7 @@ namespace EPubReader.ViewModel
             return true;
         }
 
-        public void AddNewBook(object obj)
+        private void AddNewBook(object obj)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             EpubBook book;
@@ -73,20 +73,21 @@ namespace EPubReader.ViewModel
         }
 
         // Change bookmark commmand
-        private bool CanChangeBookmark(object obj)
+        private bool CanChangeFavorite(object obj)
         {
             return true;
         }
 
-        private void ChangeBookmark(object obj)
+        private void ChangeFavorite(object obj)
         {
             Book selectedBook = (Book)obj;
-            if (selectedBook.IsBookmark)
+            if (selectedBook.IsFavorite)
             {
-                selectedBook.IsBookmark = false;
-            } else
+                selectedBook.IsFavorite = false;
+            }
+            else
             {
-                selectedBook.IsBookmark = true;
+                selectedBook.IsFavorite = true;
             }
             SaveJson();
         }

@@ -36,6 +36,8 @@ namespace EPubReader.ViewModels
         public FlowDocument flowDocument { get; }
         private int fontSize { get; set; } = 18;
         private int themeColor { get; set; }
+
+        // Commands
         public ICommand PrevPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand OptionsCommand { get; set; }
@@ -115,8 +117,7 @@ namespace EPubReader.ViewModels
             }
         }
 
-
-        public void RenderSection()
+        private void RenderSection()
         {
             CreateSection();
             UpdateSection();
@@ -126,7 +127,7 @@ namespace EPubReader.ViewModels
         {
             ClearRichTextBoxIfNotEmpty();
             bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
-            sections[currentSectionIndex] = bookViewModel.CreateSection(fontSize);
+            sections[currentSectionIndex] = bookViewModel.CreateSection(null, fontSize);
         }
 
         private void UpdateSection()
@@ -134,7 +135,7 @@ namespace EPubReader.ViewModels
             flowDocument.Blocks.Add(sections[currentSectionIndex]);
         }
 
-        public void ChangeSection(int direction)
+        private void ChangeSection(int direction)
         {
             ClearRichTextBoxIfNotEmpty();
             currentSectionIndex += direction;

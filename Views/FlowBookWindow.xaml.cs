@@ -1,6 +1,7 @@
 ﻿using EPubReader.ViewModels;
 using System.Diagnostics.Metrics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -19,12 +20,18 @@ namespace EPubReader.Views
         public FlowBookWindow(string BookPath, int seconds)
         {
             InitializeComponent();
-            this.seconds = seconds;
             FReaderBookViewModel flowBookViewModel = new FReaderBookViewModel(BookPath);
+
+            // Data context
+            this.seconds = seconds;
             flowBookWindow.Title = flowBookViewModel.BookTitle;
             flowDocumentReader.Document = flowBookViewModel.flowDocument;
             this.DataContext = flowBookViewModel;
 
+            // Invokes
+            flowBookViewModel.ScrollToAnchor += ScrollToAnchor;
+
+            // Timer
             if (seconds > 0)
             {
                 dispatcherTimer = new DispatcherTimer();
@@ -35,6 +42,11 @@ namespace EPubReader.Views
             {
                 TimerText.Text = "Timer: disabled";
             }
+        }
+
+        void ScrollToAnchor(Paragraph p)
+        {
+            p.BringIntoView();
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -50,10 +62,6 @@ namespace EPubReader.Views
             TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
         }
 
-        private void JumpToPara_Click(object sender, RoutedEventArgs e)
-        {
-            Paragraph p = new Paragraph(new Run("Uncle Justus was a very quiet, dignified man, with a Roman nose andgray side whiskers."));
-            p.BringIntoView();
-        }
+
     }
 }

@@ -14,7 +14,6 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Cursor="Hand" Header="Chapters" Height="30" Command="{Binding ChaptersCommand}" />
             <MenuItem x:Name="OptionsMenuItem" Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>
-            <MenuItem x:Name="JumpToPara" Cursor="Hand" Header="Jump" Height="30" Click="JumpToPara_Click"/>
         </Menu>
         <FlowDocumentReader Name="flowDocumentReader" MinZoom="100" MaxZoom="300" Zoom="150" ViewingMode="TwoPage" IsPageViewEnabled="False"></FlowDocumentReader>
     </DockPanel>

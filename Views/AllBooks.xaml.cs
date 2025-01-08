@@ -66,7 +66,7 @@ namespace EPubReader.Views
             Book[] searchedBooks;
             if (isBookMarksFilterEnabled)
             {
-                Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsBookmark).ToArray();
+                Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsFavorite).ToArray();
                 searchedBooks = booksViewModel.searchBooksByTitle(bookmarksBooks, searchText);
             } else
             {
@@ -81,16 +81,16 @@ namespace EPubReader.Views
             SearchButton_Click(sender, e);
         }
 
-        private void AddToBookmarks_Click(object sender, RoutedEventArgs e)
+        private void AddOrRemoveToFavorite_Click(object sender, RoutedEventArgs e)
         {
             Book selectedBook = (Book)booksListBox.SelectedItem;
-            if (booksViewModel.AddToBookmarksCommand.CanExecute(selectedBook))
-                booksViewModel.AddToBookmarksCommand.Execute(selectedBook);
+            if (booksViewModel.ChangeFavoriteCommand.CanExecute(selectedBook))
+                booksViewModel.ChangeFavoriteCommand.Execute(selectedBook);
         }
 
         private void EnableBookmarksButton_Click(object sender, RoutedEventArgs e)
         {
-            Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsBookmark).ToArray();
+            Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsFavorite).ToArray();
             booksListBox.ItemsSource = bookmarksBooks;
             BookmarksButton.Content = "All books";
             isBookMarksFilterEnabled = true;
@@ -99,7 +99,7 @@ namespace EPubReader.Views
         private void DisableBookmarksButton_Click(object sender, RoutedEventArgs e)
         {
             booksListBox.ItemsSource = booksViewModel.books;
-            BookmarksButton.Content = "Bookmarks";
+            BookmarksButton.Content = "Favorites";
             isBookMarksFilterEnabled = false;
         }
 

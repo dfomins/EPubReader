@@ -30,9 +30,13 @@ namespace EPubReader.ViewModel
         /// <summary>
         /// Handles all nodes, parse them and then return as section
         /// </summary>
-        public Section CreateSection(int fontSize = 18)
+        public Section CreateSection(string chapterKey, int fontSize = 18)
         {
             Section section = new Section();
+            if (chapterKey != null)
+            {
+                section.Tag = chapterKey;
+            }
             try
             {
                 HtmlNode bodyNode = document.DocumentNode.SelectSingleNode("//body");

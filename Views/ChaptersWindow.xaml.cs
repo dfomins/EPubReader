@@ -20,10 +20,23 @@ namespace EPubReader.Views
     /// </summary>
     public partial class ChaptersWindow : Window
     {
+        public string anchor { get; set; } = string.Empty;
+
         public ChaptersWindow(List<EpubNavigationItem> bookChapters)
         {
             InitializeComponent();
             bookChaptersListBox.ItemsSource = bookChapters;
+        }
+
+        public void ChapterLabel_Click(object sender, EventArgs e)
+        {
+            if (sender is Label label)
+            {
+                var chapter = label.DataContext as EpubNavigationItem;
+                anchor = chapter.Link.ContentFileUrl;
+                DialogResult = true;
+                Close();
+            }
         }
     }
 }

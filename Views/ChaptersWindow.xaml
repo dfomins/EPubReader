@@ -12,7 +12,7 @@
         <ListBox x:Name="bookChaptersListBox" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Label Content="{Binding Title}" Cursor="Hand" />
+                    <Label Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="ChapterLabel_Click"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

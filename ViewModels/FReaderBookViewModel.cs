@@ -2,6 +2,7 @@
 using EPubReader.Core;
 using EPubReader.ViewModel;
 using EPubReader.Views;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,6 +17,8 @@ namespace EPubReader.ViewModels
         public string BookTitle { get; }
         public FlowDocument flowDocument { get; }
         private int themeColor { get; set; }
+
+        // Commands
         public ICommand OptionsCommand { get; }
         public ICommand ChaptersCommand { get; }
 
@@ -32,15 +35,35 @@ namespace EPubReader.ViewModels
             LoadBookContent();
         }
 
+
+        // Chapters window
         private bool CanOpenChaptersWindow(object obj)
         {
             return true;
         }
 
+        public event Action<Paragraph> ScrollToAnchor;
         private void OpenChaptersWindow(object obj)
         {
             ChaptersWindow chaptersWindow = new ChaptersWindow(bookChapters);
-            chaptersWindow.ShowDialog();
+            if (chaptersWindow.ShowDialog() == true)
+            {
+                Section foundSection = FindSectionByAnchor(chaptersWindow.anchor);
+                var paragraph = foundSection.Blocks.OfType<Paragraph>().FirstOrDefault();
+                ScrollToAnchor?.Invoke(paragraph);
+            }
+        }
+
+        private Section FindSectionByAnchor(string anchor)
+        {
+            foreach (var block in flowDocument.Blocks)
+            {
+                if (block is Section section && section.Tag?.ToString() == anchor)
+                {
+                    return section;
+                }
+            }
+            return null;
         }
 
         private bool CanOpenOptionsWindow(object obj)
@@ -76,7 +99,7 @@ namespace EPubReader.ViewModels
             foreach (EpubLocalTextContentFile chapter in bookViewModel.book.ReadingOrder)
             {
                 bookViewModel.document.LoadHtml(chapter.Content);
-                flowDocument.Blocks.Add(bookViewModel.CreateSection());
+                flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Key));
             }
         }
     }
