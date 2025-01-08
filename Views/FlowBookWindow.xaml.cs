@@ -1,6 +1,7 @@
 ﻿using EPubReader.ViewModels;
 using System.Diagnostics.Metrics;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -47,6 +48,12 @@ namespace EPubReader.Views
             TimeSpan timer = TimeSpan.FromSeconds(seconds);
             TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
             TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
+        }
+
+        private void JumpToPara_Click(object sender, RoutedEventArgs e)
+        {
+            Paragraph p = new Paragraph(new Run("Uncle Justus was a very quiet, dignified man, with a Roman nose andgray side whiskers."));
+            p.BringIntoView();
         }
     }
 }

@@ -17,20 +17,9 @@
             <Label HorizontalContentAlignment="Center">
                 <TextBlock Text="{Binding Title}" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
             </Label>
-                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                    <Run Text="Description: " FontWeight="Bold"/>
-                    <Run Text="{Binding Description}"/>
-                </TextBlock>
-
-                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                    <Run Text="Path: " FontWeight="Bold"/>
-                    <Run Text="{Binding Path}"/>
-                </TextBlock>
-
-                <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                    <Run Text="Addition date: " FontWeight="Bold"/>
-                    <Run Text="{Binding AddingDate}"/>
-                </TextBlock>
+                <TextBlock TextWrapping="Wrap" Text="{Binding Description, StringFormat='Description: {0}'}" Margin="0,0,0,10" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding Path, StringFormat='Description: {0}'}" Margin="0,0,0,10" />
+                <TextBlock TextWrapping="Wrap" Text="{Binding AddingDate, StringFormat='Description: {0}'}" Margin="0,0,0,10" />
             </StackPanel>
         </ScrollViewer>
     </Border>

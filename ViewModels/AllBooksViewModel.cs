@@ -14,6 +14,7 @@ namespace EPubReader.ViewModel
 {
     public class AllBooksViewModel : ObservableObject
     {
+        private string jsonPath { get; }
         public ObservableCollection<Book> books { get; set; }
 
         private Book _selectedBook;
@@ -30,23 +31,35 @@ namespace EPubReader.ViewModel
             set { _booksCounter = value; OnPropertyChanged(); }
         }
 
-        public ICommand DeleteBookCommand { get; set; }
-
         private void BooksCount()
         {
             booksCounter = books.Count;
         }
 
+        // Commmands
+        public ICommand AddNewBookCommand { get; set; }
+        public ICommand AddToBookmarksCommand { get; set; }
+        public ICommand DeleteBookCommand { get; set; }
+
         public AllBooksViewModel()
         {
+            jsonPath = "books.json";
             books = new ObservableCollection<Book>();
-            LoadFromJson("books.json");
+            LoadFromJson();
             BooksCount();
 
+            AddNewBookCommand = new RelayCommand(AddNewBook, CanAddNewBook);
+            AddToBookmarksCommand = new RelayCommand(ChangeBookmark, CanChangeBookmark);
             DeleteBookCommand = new RelayCommand(DeleteBook, CanDeleteBook);
         }
 
-        public void AddNewBook()
+        // Add new book command
+        private bool CanAddNewBook(object obj)
+        {
+            return true;
+        }
+
+        public void AddNewBook(object obj)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             EpubBook book;
@@ -54,11 +67,37 @@ namespace EPubReader.ViewModel
             if (ofd.ShowDialog() == true)
             {
                 book = EpubReader.ReadBook(ofd.FileName);
-                AddBookToJson(books, book, ofd.FileName);
+                AddBookToJson(book, ofd.FileName);
+                BooksCount();
             }
-            BooksCount();
         }
 
+        // Change bookmark commmand
+        private bool CanChangeBookmark(object obj)
+        {
+            return true;
+        }
+
+        private void ChangeBookmark(object obj)
+        {
+            Book selectedBook = (Book)obj;
+            if (selectedBook.IsBookmark)
+            {
+                selectedBook.IsBookmark = false;
+            } else
+            {
+                selectedBook.IsBookmark = true;
+            }
+            SaveJson();
+        }
+
+        // Search
+        public Book[] searchBooksByTitle(Book[] booksArray, string searchText)
+        {
+            return booksArray.Where(Book => Book.Title.ToLower().Contains(searchText.ToLower())).ToArray();
+        }
+
+        // Open book command
         public void OpenBook(Book selectedBook, int selectedReader, int timer)
         {
             if (File.Exists(selectedBook.Path))
@@ -76,9 +115,13 @@ namespace EPubReader.ViewModel
                         richTextBoxBookWindow.ShowDialog();
                     }
                 }
+            } else
+            {
+                MessageBox.Show("Book doesn't exist!");
             }
         }
 
+        // Delete book command
         private bool CanDeleteBook(object obj)
         {
             if (obj != null)
@@ -92,13 +135,14 @@ namespace EPubReader.ViewModel
         {
             Book selectedBook = (Book)obj;
             books.Remove(selectedBook);
-            SaveJson("books.json");
+            SaveJson();
             MessageBox.Show($"Book '{selectedBook.Title}' deleted.", "Book deleted", MessageBoxButton.OK, MessageBoxImage.Information);
             GarbageCollector();
             DeleteCover(selectedBook.Id);
             BooksCount();
         }
 
+        // Delete book cover after book deletion
         private void DeleteCover(int id)
         {
             if (File.Exists($"book-covers/{id}.png"))
@@ -107,7 +151,9 @@ namespace EPubReader.ViewModel
             }
         }
 
-        private void AddBookToJson(ObservableCollection<Book> books, EpubBook book, string bookPath)
+
+        // JSON methods
+        private void AddBookToJson(EpubBook book, string bookPath)
         {
             if (books.Any(b => b.Title == book.Title))
             {
@@ -127,18 +173,18 @@ namespace EPubReader.ViewModel
             };
             books.Add(newBook);
             
-            SaveJson("books.json");
+            SaveJson();
 
             CreateCoverImage("book-covers", book, newBook);
         }
 
-        private void SaveJson(string jsonPath)
+        private void SaveJson()
         {
             string json = JsonConvert.SerializeObject(books, Formatting.Indented);
             File.WriteAllText(jsonPath, json);
         }
 
-        private void LoadFromJson(string jsonPath)
+        private void LoadFromJson()
         {
             if (File.Exists(jsonPath))
             {
@@ -146,6 +192,7 @@ namespace EPubReader.ViewModel
                 books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(json);
             }
         }
+        //
 
         private void CreateCoverImage(string dirname, EpubBook book, Book newBook)
         {

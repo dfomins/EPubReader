@@ -10,7 +10,8 @@ namespace EPubReader.Views
 {
     public partial class AllBooks : Window
     {
-        AllBooksViewModel booksViewModel = new AllBooksViewModel();
+        AllBooksViewModel booksViewModel;
+        bool isBookMarksFilterEnabled { get; set; }
 
         int hours { get; set; }
         int minutes { get; set; }
@@ -18,12 +19,13 @@ namespace EPubReader.Views
         public AllBooks()
         {
             InitializeComponent();
+            booksViewModel = new AllBooksViewModel();
             booksListBox.ItemsSource = booksViewModel.books;
-            this.DataContext = booksViewModel;
+            DataContext = booksViewModel;
             hours = minutes = 0;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void DeleteBook_Click(object sender, RoutedEventArgs e)
         {
             Book selectedBook = (Book)booksListBox.SelectedItem;
             if (booksViewModel.DeleteBookCommand.CanExecute(selectedBook))
@@ -48,11 +50,6 @@ namespace EPubReader.Views
             }
         }
 
-        private void AddNewBookCommand(object sender, RoutedEventArgs e)
-        {
-            booksViewModel.AddNewBook();
-        }
-
         private void TimerMenu_Click(object sender, RoutedEventArgs e)
         {
             Timer timerWindow = new Timer(hours, minutes);
@@ -66,14 +63,45 @@ namespace EPubReader.Views
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             string searchText = SearchBox.Text;
-            Book[] searchedBooks = booksViewModel.books.Where(Book => Book.Title.ToLower().Contains(searchText.ToLower())).ToArray();
+            Book[] searchedBooks;
+            if (isBookMarksFilterEnabled)
+            {
+                Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsBookmark).ToArray();
+                searchedBooks = booksViewModel.searchBooksByTitle(bookmarksBooks, searchText);
+            } else
+            {
+                searchedBooks = booksViewModel.searchBooksByTitle(booksViewModel.books.ToArray(), searchText);
+            }
             booksListBox.ItemsSource = searchedBooks;
         }
 
-        private void ClickButton_Click(object sender, RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Clear();
             SearchButton_Click(sender, e);
         }
+
+        private void AddToBookmarks_Click(object sender, RoutedEventArgs e)
+        {
+            Book selectedBook = (Book)booksListBox.SelectedItem;
+            if (booksViewModel.AddToBookmarksCommand.CanExecute(selectedBook))
+                booksViewModel.AddToBookmarksCommand.Execute(selectedBook);
+        }
+
+        private void EnableBookmarksButton_Click(object sender, RoutedEventArgs e)
+        {
+            Book[] bookmarksBooks = booksViewModel.books.Where(book => book.IsBookmark).ToArray();
+            booksListBox.ItemsSource = bookmarksBooks;
+            BookmarksButton.Content = "All books";
+            isBookMarksFilterEnabled = true;
+        }
+
+        private void DisableBookmarksButton_Click(object sender, RoutedEventArgs e)
+        {
+            booksListBox.ItemsSource = booksViewModel.books;
+            BookmarksButton.Content = "Bookmarks";
+            isBookMarksFilterEnabled = false;
+        }
+
     }
 }

@@ -25,7 +25,7 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <Menu BorderThickness="0 0 0 1" BorderBrush="{StaticResource Border}">
-                    <MenuItem Height="25" Header="Load book" Cursor="Hand" Click="AddNewBookCommand" />
+                    <MenuItem Height="25" Header="Load book" Cursor="Hand" Command="{Binding AddNewBookCommand}" />
                     <MenuItem Height="25" Header="Reader" Cursor="Hand">
                         <RadioButton x:Name="ReaderSelectBtn_1" Content="FlowDocumentReader" IsChecked="True" Cursor="Hand" />
                         <RadioButton x:Name="ReaderSelectBtn_2" Content="RichTextBox" Cursor="Hand" />
@@ -40,6 +40,7 @@
                         <ColumnDefinition Width="200" />
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="50" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="SearchBox" Margin="5 5 0 5" Padding="3 0" Style="{StaticResource SearchInput}" />
                     <Label Content="Search for book..." IsHitTestVisible="False" Margin="5" VerticalAlignment="Center" Visibility="{Binding Text.IsEmpty, ElementName=SearchBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -48,25 +49,32 @@
                             <Path Data="{StaticResource SearchIcon}" Fill="Black"/>
                         </Viewbox>
                     </Button>
-                    <Button Grid.Column="2" Style="{StaticResource RoundButton}" Content="Clear" Margin="0 5 5 5" Padding="5" Cursor="Hand" Click="ClickButton_Click" />
+                    <Button Grid.Column="2" Style="{StaticResource RoundButton}" Content="Clear" Margin="0 5 5 5" Padding="5" Cursor="Hand" Click="ClearButton_Click" />
+                    <ToggleButton x:Name="BookmarksButton" Grid.Column="3" Style="{StaticResource RoundToggleButton}" Checked="EnableBookmarksButton_Click" Unchecked="DisableBookmarksButton_Click" Content="Bookmarks" Width="70" HorizontalAlignment="Right" Margin="5"></ToggleButton>
                 </Grid>
-                    <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
+                <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"> 
                                 <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_DoubleClick">
                                     <Label.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Delete book" Click="MenuItem_Click" />
+                                        <ContextMenu>
+                                            <MenuItem Header="Add to bookmarks" Click="AddToBookmarks_Click" />
+                                            <MenuItem Header="Delete book" Click="DeleteBook_Click" />
                                         </ContextMenu>
                                     </Label.ContextMenu>
                                 </Label>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <TextBlock Grid.Row="3"
-                         Name="NumberOfBooks"
-                         Padding="5 0 0 0"
-                         Text="{Binding booksCounter, StringFormat='Number of books: {0}'}" />
+                                <Viewbox VerticalAlignment="Center" IsHitTestVisible="False" Width="10" Visibility="{Binding IsBookmark, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Path Data="{StaticResource BookmarkIcon}" Fill="Black"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Grid.Row="3"
+                        Name="NumberOfBooks"
+                        Padding="5 0 0 0"
+                        Text="{Binding booksCounter, StringFormat='Number of books: {0}'}" />
             </Grid>
             <views:BookInfo Grid.Column="1" DataContext="{Binding selectedBook}"/>
         </Grid>

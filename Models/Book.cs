@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using EPubReader.Core;
 
 namespace EPubReader.Models
 {
-    public class Book
+    public class Book : ObservableObject
     {
         string bookCoversDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "book-covers");
 
@@ -15,5 +15,18 @@ namespace EPubReader.Models
             get { return System.IO.Path.Combine(bookCoversDirectory, $"{Id}.png"); }
         }
         public string AddingDate { get; set; } = string.Empty;
+        private bool _isBookmark;
+        public bool IsBookmark
+        {
+            get { return _isBookmark; }
+            set
+            {
+                if (_isBookmark != value)
+                {
+                    _isBookmark = value;
+                    OnPropertyChanged(nameof(IsBookmark));
+                }
+            }
+        }
     }
 }
