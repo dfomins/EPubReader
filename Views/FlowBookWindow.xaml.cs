@@ -13,14 +13,15 @@ namespace EPubReader.Views
     /// </summary>
     public partial class FlowBookWindow : Window
     {
-        DispatcherTimer dispatcherTimer { get; }
-        int counter { get; set; }
-        int seconds { get; }
+        private FReaderBookViewModel flowBookViewModel { get; }
+        private DispatcherTimer dispatcherTimer { get; }
+        private int counter { get; set; }
+        private int seconds { get; }
 
         public FlowBookWindow(string BookPath, int seconds)
         {
             InitializeComponent();
-            FReaderBookViewModel flowBookViewModel = new FReaderBookViewModel(BookPath);
+            flowBookViewModel = new FReaderBookViewModel(BookPath);
 
             // Data context
             this.seconds = seconds;
@@ -61,7 +62,5 @@ namespace EPubReader.Views
             TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
             TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
         }
-
-
     }
 }

@@ -1,9 +1,11 @@
 ﻿using EPubReader.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using VersOne.Epub;
 
 namespace EPubReader.Views
 {
@@ -79,10 +81,14 @@ namespace EPubReader.Views
             }
         }
 
-        //test
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(sender.ToString());
+            if (sender is Label label)
+            {
+                var chapter = label.DataContext as EpubNavigationItem;
+                var anchor = chapter.Link.ContentFileUrl;
+                richBookViewModel.RenderSectionByAnchor(anchor);
+            }
         }
     }
 }

@@ -55,7 +55,19 @@ namespace EPubReader.ViewModels
             NextPageCommand = new RelayCommand(NextPage, CanOpenNextPage);
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
 
+            SetSectionsTags();
+
             RenderSection();
+        }
+
+        //test
+        private void SetSectionsTags()
+        {
+            for (int i = 0; i < sections.Length; i++)
+            {
+                sections[i] = new Section();
+                sections[i].Tag = readingOrder[i].Key;
+            }
         }
 
         private bool CanOpenPrevPage(object obj)
@@ -94,6 +106,7 @@ namespace EPubReader.ViewModels
         }
 
         public event Action<int> ChangeColorTheme;
+
         /// <summary>
         /// Opens options window with font family and font size settings
         /// </summary>
@@ -119,20 +132,11 @@ namespace EPubReader.ViewModels
 
         private void RenderSection()
         {
-            CreateSection();
-            UpdateSection();
-        }
-
-        private void CreateSection()
-        {
             ClearRichTextBoxIfNotEmpty();
             bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
-            sections[currentSectionIndex] = bookViewModel.CreateSection(null, fontSize);
-        }
-
-        private void UpdateSection()
-        {
+            sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Key, fontSize);
             flowDocument.Blocks.Add(sections[currentSectionIndex]);
+
         }
 
         private void ChangeSection(int direction)
@@ -146,6 +150,18 @@ namespace EPubReader.ViewModels
         private void ClearRichTextBoxIfNotEmpty()
         {
             ClearRichTextBox?.Invoke();
+        }
+
+        public void RenderSectionByAnchor(string anchor)
+        {
+            for (int i = 0; i < sections.Length; i++)
+            {
+                if (sections[i].Tag.ToString() == anchor)
+                {
+                    currentSectionIndex = i;
+                    RenderSection();
+                }
+            }
         }
     }
 }

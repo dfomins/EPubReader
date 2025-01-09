@@ -94,6 +94,7 @@ namespace EPubReader.Views
             booksListBox.ItemsSource = bookmarksBooks;
             BookmarksButton.Content = "All books";
             isBookMarksFilterEnabled = true;
+            booksViewModel.booksCounter = bookmarksBooks.Count();
         }
 
         private void DisableBookmarksButton_Click(object sender, RoutedEventArgs e)
@@ -101,6 +102,7 @@ namespace EPubReader.Views
             booksListBox.ItemsSource = booksViewModel.books;
             BookmarksButton.Content = "Favorites";
             isBookMarksFilterEnabled = false;
+            booksViewModel.BooksCount();
         }
 
     }

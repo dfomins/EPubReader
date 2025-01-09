@@ -31,7 +31,7 @@ namespace EPubReader.ViewModel
             set { _booksCounter = value; OnPropertyChanged(); }
         }
 
-        private void BooksCount()
+        public void BooksCount()
         {
             booksCounter = books.Count;
         }

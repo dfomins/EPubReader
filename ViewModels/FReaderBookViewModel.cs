@@ -3,6 +3,7 @@ using EPubReader.Core;
 using EPubReader.ViewModel;
 using EPubReader.Views;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -35,7 +36,6 @@ namespace EPubReader.ViewModels
             LoadBookContent();
         }
 
-
         // Chapters window
         private bool CanOpenChaptersWindow(object obj)
         {
@@ -50,7 +50,8 @@ namespace EPubReader.ViewModels
             {
                 Section foundSection = FindSectionByAnchor(chaptersWindow.anchor);
                 var paragraph = foundSection.Blocks.OfType<Paragraph>().FirstOrDefault();
-                ScrollToAnchor?.Invoke(paragraph);
+                if (paragraph != null)
+                    ScrollToAnchor?.Invoke(paragraph);
             }
         }
 
