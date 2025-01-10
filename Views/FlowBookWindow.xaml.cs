@@ -25,7 +25,7 @@ namespace EPubReader.Views
 
             // Data context
             this.seconds = seconds;
-            flowBookWindow.Title = flowBookViewModel.BookTitle;
+            flowBookWindow.Title = flowBookViewModel.bookTitle;
             flowDocumentReader.Document = flowBookViewModel.flowDocument;
             this.DataContext = flowBookViewModel;
 

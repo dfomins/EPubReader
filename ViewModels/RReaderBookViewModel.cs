@@ -23,7 +23,7 @@ namespace EPubReader.ViewModels
         private int _currentSectionIndex = 0;
         public int currentSectionIndex
         {
-            get => _currentSectionIndex;
+            get { return _currentSectionIndex; }
             set
             {
                 _currentSectionIndex = value;
@@ -42,6 +42,19 @@ namespace EPubReader.ViewModels
         public ICommand NextPageCommand { get; }
         public ICommand OptionsCommand { get; set; }
 
+        // Styling
+        private Brush _panelColor;
+        public Brush PanelColor {
+            get { return _panelColor; }
+            set { _panelColor = value; OnPropertyChanged(nameof(PanelColor)); }
+        }
+        private Brush _textColor;
+        public Brush TextColor
+        {
+            get { return _textColor; }
+            set { _textColor = value; OnPropertyChanged(nameof(TextColor)); }
+        }
+
         public RReaderBookViewModel(string BookPath)
         {
             bookViewModel = new BaseBookViewModel(BookPath);
@@ -54,13 +67,13 @@ namespace EPubReader.ViewModels
             PrevPageCommand = new RelayCommand(PrevPage, CanOpenPrevPage);
             NextPageCommand = new RelayCommand(NextPage, CanOpenNextPage);
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
+            TextColor = Brushes.Black;
 
             SetSectionsTags();
 
             RenderSection();
         }
 
-        //test
         private void SetSectionsTags()
         {
             for (int i = 0; i < sections.Length; i++)
@@ -105,7 +118,7 @@ namespace EPubReader.ViewModels
             return true;
         }
 
-        public event Action<int> ChangeColorTheme;
+        //public event Action<int> ChangeColorTheme;
 
         /// <summary>
         /// Opens options window with font family and font size settings
@@ -120,11 +133,13 @@ namespace EPubReader.ViewModels
                 themeColor = options.themeColor;
                 if (options.themeColor == 0)
                 {
-                    ChangeColorTheme?.Invoke(0);
+                    PanelColor = Brushes.White;
+                    TextColor = Brushes.Black;
                 }
                 else if (options.themeColor == 1)
                 {
-                    ChangeColorTheme?.Invoke(1);
+                    PanelColor = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+                    TextColor = Brushes.White;
                 }
                 RenderSection();
             }

@@ -32,7 +32,7 @@
                     <RowDefinition/>
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-                <Border Name="buttonsPanel" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="Gray">
+                <Border Name="buttonsPanel" Background="{Binding PanelColor}" Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="Gray">
                     <DockPanel HorizontalAlignment="Center">
                         <Button DockPanel.Dock="Left" Content="Prev" Padding="30 10" Margin="15 10" Cursor="Hand" Background="White" Command="{Binding PrevPageCommand}">
                             <Button.Resources>
@@ -41,7 +41,7 @@
                                 </Style>
                             </Button.Resources>
                         </Button>
-                        <TextBlock x:Name="TimerText" VerticalAlignment="Center" TextAlignment="Center" Width="150" />
+                        <TextBlock x:Name="TimerText" Foreground="{Binding TextColor}" VerticalAlignment="Center" TextAlignment="Center" Width="150" />
                         <Button DockPanel.Dock="Left" Content="Next" Padding="30 10" Margin="15 10" Cursor="Hand" Background="White" Command="{Binding NextPageCommand}">
                             <Button.Resources>
                                 <Style TargetType="{x:Type Border}">
@@ -52,7 +52,7 @@
                     </DockPanel>
                 </Border>
                 <ScrollViewer x:Name="richTextBoxScrollViewer">
-                    <RichTextBox Name="richTextBox" Padding="100 50" IsReadOnly="True" BorderThickness="0"/>
+                    <RichTextBox Name="richTextBox" Background="{Binding PanelColor}" Foreground="{Binding TextColor}" Padding="100 50" IsReadOnly="True" BorderThickness="0"/>
                 </ScrollViewer>
             </Grid>
         </Grid>

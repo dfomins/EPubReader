@@ -24,13 +24,12 @@ namespace EPubReader.Views
             InitializeComponent();
             this.seconds = seconds;
             richBookViewModel = new RReaderBookViewModel(BookPath);
-            this.DataContext = richBookViewModel;
+            DataContext = richBookViewModel;
             richBookWindow.Title = richBookViewModel.bookTitle;
             ClearRichTextBoxIfNotEmpty();
             richTextBox.Document = richBookViewModel.flowDocument;
             bookChaptersListBox.ItemsSource = richBookViewModel.bookChapters;
             richBookViewModel.ClearRichTextBox += ClearRichTextBoxIfNotEmpty;
-            richBookViewModel.ChangeColorTheme += SetThemeColor;
 
             if (seconds > 0)
             {
@@ -56,20 +55,6 @@ namespace EPubReader.Views
             TimeSpan timer = TimeSpan.FromSeconds(seconds);
             TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
             TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
-        }
-
-        private void SetThemeColor(int themeColor)
-        {
-            if (themeColor == 0)
-            {
-                richTextBox.Background = Brushes.White;
-                richTextBox.Foreground = Brushes.Black;
-            }
-            else if (themeColor == 1)
-            {
-                richTextBox.Background = Brushes.Black;
-                richTextBox.Foreground = Brushes.White;
-            }
         }
 
         private void ClearRichTextBoxIfNotEmpty()

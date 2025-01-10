@@ -15,7 +15,7 @@ namespace EPubReader.ViewModels
     {
         private BaseBookViewModel bookViewModel { get; }
         public List<EpubNavigationItem> bookChapters { get; }
-        public string BookTitle { get; }
+        public string bookTitle { get; }
         public FlowDocument flowDocument { get; }
         private int themeColor { get; set; }
 
@@ -23,15 +23,34 @@ namespace EPubReader.ViewModels
         public ICommand OptionsCommand { get; }
         public ICommand ChaptersCommand { get; }
 
+        // Events
+        public event Action<Paragraph> ScrollToAnchor;
+
+        // Styling
+        private Brush _panelColor;
+        public Brush PanelColor
+        {
+            get { return _panelColor; }
+            set { _panelColor = value; OnPropertyChanged(nameof(PanelColor)); }
+        }
+        private Brush _textColor;
+        public Brush TextColor
+        {
+            get { return _textColor; }
+            set { _textColor = value; OnPropertyChanged(nameof(TextColor)); }
+        }
+
         public FReaderBookViewModel(string bookPath)
         {
             bookViewModel = new BaseBookViewModel(bookPath);
             bookChapters = bookViewModel.bookChapters;
-            BookTitle = bookViewModel.bookTitle;
+            bookTitle = bookViewModel.bookTitle;
             flowDocument = bookViewModel.flowDocument;
 
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             ChaptersCommand = new RelayCommand(OpenChaptersWindow, CanOpenChaptersWindow);
+
+            TextColor = Brushes.Black;
 
             LoadBookContent();
         }
@@ -42,10 +61,9 @@ namespace EPubReader.ViewModels
             return true;
         }
 
-        public event Action<Paragraph> ScrollToAnchor;
         private void OpenChaptersWindow(object obj)
         {
-            ChaptersWindow chaptersWindow = new ChaptersWindow(bookChapters);
+            ChaptersWindow chaptersWindow = new ChaptersWindow(bookChapters, bookTitle);
             if (chaptersWindow.ShowDialog() == true)
             {
                 Section foundSection = FindSectionByAnchor(chaptersWindow.anchor);
@@ -72,6 +90,8 @@ namespace EPubReader.ViewModels
             return true;
         }
 
+        //public event Action<int> ColorTheme;
+
         /// <summary>
         /// Opens options window with font family settings
         /// </summary>
@@ -86,12 +106,14 @@ namespace EPubReader.ViewModels
             if (options.themeColor == 0)
             {
                 flowDocument.Background = Brushes.White;
-                flowDocument.Foreground = Brushes.Black;
+                PanelColor = Brushes.White;
+                TextColor = Brushes.Black;
             }
             else if (options.themeColor == 1)
             {
-                flowDocument.Background = Brushes.Black;
-                flowDocument.Foreground = Brushes.White;
+                flowDocument.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+                PanelColor = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+                TextColor = Brushes.White;
             }
         }
 

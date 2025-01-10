@@ -10,11 +10,11 @@
         MinWidth="700" Width="800"
         WindowStartupLocation="CenterScreen">
     <DockPanel>
-        <TextBlock x:Name="TimerText" DockPanel.Dock="Bottom" Margin="2 1 1 1" />
-        <Menu DockPanel.Dock="Top">
+        <TextBlock x:Name="TimerText" Background="{Binding PanelColor}" Foreground="{Binding TextColor}" DockPanel.Dock="Bottom" Padding="2 1 1 1" />
+        <Menu DockPanel.Dock="Top" Background="{Binding PanelColor}" Foreground="{Binding TextColor}">
             <MenuItem Cursor="Hand" Header="Chapters" Height="30" Command="{Binding ChaptersCommand}" />
             <MenuItem x:Name="OptionsMenuItem" Cursor="Hand" Header="Options" Height="30" Command="{Binding OptionsCommand}"/>
         </Menu>
-        <FlowDocumentReader Name="flowDocumentReader" MinZoom="100" MaxZoom="300" Zoom="150" ViewingMode="TwoPage" IsPageViewEnabled="False"></FlowDocumentReader>
+        <FlowDocumentReader Name="flowDocumentReader" Background="{Binding PanelColor}" Foreground="{Binding TextColor}" MinZoom="100" MaxZoom="300" Zoom="150" ViewingMode="TwoPage" IsPageViewEnabled="False" />
     </DockPanel>
 </Window>

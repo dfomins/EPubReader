@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using VersOne.Epub;
 
@@ -21,7 +22,10 @@ namespace EPubReader.ViewModel
         public BaseBookViewModel(string bookPath)
         {
             book = EpubReader.ReadBook(bookPath);
-            bookChapters = book.Navigation.ToList();
+            if (book.Navigation != null)
+            {
+                bookChapters = book.Navigation.ToList();
+            }
             bookTitle = book.Title;
             images = book.Content.Images.Local;
             flowDocument.ColumnWidth = double.PositiveInfinity;
@@ -32,6 +36,7 @@ namespace EPubReader.ViewModel
         /// </summary>
         public Section CreateSection(string chapterKey, int fontSize = 18)
         {
+
             Section section = new Section();
             if (chapterKey != null)
             {
@@ -122,33 +127,37 @@ namespace EPubReader.ViewModel
                     string fileName = node.Attributes["src"].Value;
                     if (fileName != null && images != null)
                     {
-                        var imageItem = images.FirstOrDefault(x => x.Key == fileName);
-                        BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
-
-                        Image image = new Image
+                        EpubLocalByteContentFile? imageItem = images.FirstOrDefault(x => x.Key == fileName);
+                        if (imageItem != null)
                         {
-                            Source = bitmapImage,
-                        };
+                            BitmapImage bitmapImage = CreateBitmapFromBytes(imageItem.Content);
 
-                        if (fileName == book.Content?.Cover?.Key)
-                        {
-                            image.MaxHeight = 1000;
-                            Thickness thicc = new Thickness(0, 0, 0, 40);
-                            image.Margin = thicc;
+                            Image image = new Image
+                            {
+                                Source = bitmapImage,
+                            };
+
+                            if (fileName == book.Content?.Cover?.Key)
+                            {
+                                image.MaxHeight = 1000;
+                                Thickness thicc = new Thickness(0, 0, 0, 40);
+                                image.Margin = thicc;
+                            }
+
+                            else
+                            {
+                                image.MaxHeight = 250;
+                            }
+
+                            Paragraph paragraph = new Paragraph()
+                            {
+                                TextAlignment = TextAlignment.Center,
+                            };
+
+                            paragraph.Inlines.Add(new InlineUIContainer(image));
+
+                            section.Blocks.Add(paragraph);
                         }
-                        else
-                        {
-                            image.MaxHeight = 250;
-                        }
-
-                        Paragraph paragraph = new Paragraph()
-                        {
-                            TextAlignment = TextAlignment.Center,
-                        };
-
-                        paragraph.Inlines.Add(new InlineUIContainer(image));
-
-                        section.Blocks.Add(paragraph);
                     }
                     break;
 

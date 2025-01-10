@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EPubReader.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,10 @@ namespace EPubReader.Views
     {
         public string anchor { get; set; } = string.Empty;
 
-        public ChaptersWindow(List<EpubNavigationItem> bookChapters)
+        public ChaptersWindow(List<EpubNavigationItem> bookChapters, string bookTitle)
         {
             InitializeComponent();
+            chaptersWindow.Title = bookTitle + " - Chapters";
             bookChaptersListBox.ItemsSource = bookChapters;
         }
 
@@ -33,9 +35,12 @@ namespace EPubReader.Views
             if (sender is Label label)
             {
                 var chapter = label.DataContext as EpubNavigationItem;
-                anchor = chapter.Link.ContentFileUrl;
-                DialogResult = true;
-                Close();
+                if (chapter != null && chapter.Link != null)
+                {
+                    anchor = chapter.Link.ContentFileUrl;
+                    DialogResult = true;
+                    Close();
+                }
             }
         }
     }
