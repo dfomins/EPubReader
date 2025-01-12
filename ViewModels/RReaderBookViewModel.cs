@@ -58,6 +58,7 @@ namespace EPubReader.ViewModels
             get { return _panelColor; }
             set { _panelColor = value; OnPropertyChanged(nameof(PanelColor)); }
         }
+
         private Brush _textColor;
         public Brush TextColor
         {
@@ -138,8 +139,6 @@ namespace EPubReader.ViewModels
             return true;
         }
 
-        //public event Action<int> ChangeColorTheme;
-
         /// <summary>
         /// Opens options window with font family and font size settings
         /// </summary>
@@ -168,15 +167,12 @@ namespace EPubReader.ViewModels
         private void RenderSection()
         {
             ClearRichTextBoxIfNotEmpty();
-            //bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
             sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Content, readingOrder[currentSectionIndex].Key, fontSize);
             flowDocument.Blocks.Add(sections[currentSectionIndex]);
-
         }
 
         private void ChangeSection(int direction)
         {
-            ClearRichTextBoxIfNotEmpty();
             currentSectionIndex += direction;
             RenderSection();
         }

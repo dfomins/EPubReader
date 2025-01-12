@@ -133,7 +133,6 @@ namespace EPubReader.ViewModels
         {
             foreach (EpubLocalTextContentFile chapter in bookViewModel.book.ReadingOrder)
             {
-                //bookViewModel.document.LoadHtml(chapter.Content);
                 flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Content, chapter.Key));
             }
         }
