@@ -7,21 +7,32 @@ namespace EPubReader.Views
     /// </summary>
     public partial class Timer : Window
     {
-        public int hours { get; set; }
-        public int minutes { get; set; }
+        public int timerMinutes { get; set; }
+        public bool showTimer { get; set; }
 
-        public Timer(int hours, int minutes)
+        public Timer(int minutes, bool showTimer)
         {
             InitializeComponent();
-            TimerHours.Text = hours.ToString();
-            TimerMinutes.Text = minutes.ToString();
+
+            TimeSpan timeSpan = TimeSpan.FromMinutes(minutes);
+            TimerHours.Text = timeSpan.Hours.ToString();
+            TimerMinutes.Text = timeSpan.Minutes.ToString();
+            showTimeOnScreenCheckbox.IsChecked = showTimer;
         }
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            hours = Convert.ToInt32(TimerHours.Text);
-            minutes = Convert.ToInt32(TimerMinutes.Text);
-            DialogResult = true;
+            int hours = Convert.ToInt32(TimerHours.Text);
+            int minutes = Convert.ToInt32(TimerMinutes.Text);
+
+            timerMinutes = minutes + hours * 60;
+
+            if (showTimeOnScreenCheckbox.IsChecked == true)
+                showTimer = true;
+
+            if (timerMinutes > 0)
+                DialogResult = true;
+
             Close();
         }
 

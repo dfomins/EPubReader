@@ -4,9 +4,10 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using VersOne.Epub;
+using System.Web;
 
 namespace EPubReader.ViewModel
 {
@@ -15,11 +16,23 @@ namespace EPubReader.ViewModel
         public EpubBook book { get; }
         public List<EpubNavigationItem> bookChapters { get; }
         public string bookTitle { get; }
-        public HtmlDocument document { get; } = new HtmlDocument();
         private ICollection<EpubLocalByteContentFile> images { get; }
         public FlowDocument flowDocument { get; } = new FlowDocument();
 
-        public BaseBookViewModel(string bookPath)
+        // Timer test
+        private DispatcherTimer dispatcherTimer;
+        private int counter { get; set; }
+        private int timerMinutes { get; set; }
+
+        private string _timerText;
+        public string timerText
+        {
+            get { return _timerText; }
+            set { _timerText = value; OnPropertyChanged(nameof(timerText)); }
+        }
+        private bool showTimer { get; }
+
+        public BaseBookViewModel(string bookPath, int timerMinutes, bool showTimer)
         {
             book = EpubReader.ReadBook(bookPath);
             if (book.Navigation != null)
@@ -29,14 +42,47 @@ namespace EPubReader.ViewModel
             bookTitle = book.Title;
             images = book.Content.Images.Local;
             flowDocument.ColumnWidth = double.PositiveInfinity;
+            this.timerMinutes = timerMinutes;
+            this.showTimer = showTimer;
+
+            if (timerMinutes > 0)
+            {
+                dispatcherTimer = new DispatcherTimer();
+                dispatcherTimer.Interval = TimeSpan.FromMinutes(1);
+                dispatcherTimer.Tick += timer_Tick;
+                dispatcherTimer.Start();
+                UpdateTimerText();
+            }
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            counter++;
+            if (counter >= timerMinutes)
+            {
+                dispatcherTimer.Stop();
+                UpdateTimerText();
+                MessageBox.Show("Time ended!", "Timer");
+                return;
+            }
+            UpdateTimerText();
+        }
+
+        private void UpdateTimerText()
+        {
+            if (showTimer)
+            {
+                TimeSpan timer = TimeSpan.FromMinutes(timerMinutes);
+                TimeSpan timeSpan = TimeSpan.FromMinutes(counter);
+                timerText = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
+            }
         }
 
         /// <summary>
-        /// Handles all nodes, parse them and then return as section
+        /// Handles all nodes, parses and then returns as section
         /// </summary>
-        public Section CreateSection(string chapterKey, int fontSize = 18)
+        public Section CreateSection(string content, string chapterKey, int fontSize = 18)
         {
-
             Section section = new Section();
             if (chapterKey != null)
             {
@@ -44,6 +90,8 @@ namespace EPubReader.ViewModel
             }
             try
             {
+                HtmlDocument document = new HtmlDocument();
+                document.LoadHtml(content);
                 HtmlNode bodyNode = document.DocumentNode.SelectSingleNode("//body");
                 IEnumerable<HtmlNode> nodes = bodyNode.Descendants();
 
@@ -72,7 +120,8 @@ namespace EPubReader.ViewModel
                 case "#text":
                 case "p":
                     string textWithoutEnters = node.InnerText.Replace("\n", null).Replace("\r", null);
-                    Paragraph text = new Paragraph(new Run(textWithoutEnters)
+                    string decodedText = HttpUtility.HtmlDecode(textWithoutEnters);
+                    Paragraph text = new Paragraph(new Run(decodedText)
                     {
                         FontSize = fontSize
                     });

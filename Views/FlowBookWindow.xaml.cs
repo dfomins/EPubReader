@@ -15,52 +15,26 @@ namespace EPubReader.Views
     {
         private FReaderBookViewModel flowBookViewModel { get; }
         private DispatcherTimer dispatcherTimer { get; }
-        private int counter { get; set; }
-        private int seconds { get; }
+        private int timerMinutes { get; }
 
-        public FlowBookWindow(string BookPath, int seconds)
+        public FlowBookWindow(string BookPath, int timerMinutes, bool showTimer)
         {
             InitializeComponent();
-            flowBookViewModel = new FReaderBookViewModel(BookPath);
+            flowBookViewModel = new FReaderBookViewModel(BookPath, timerMinutes, showTimer);
 
             // Data context
-            this.seconds = seconds;
+            this.timerMinutes = timerMinutes;
             flowBookWindow.Title = flowBookViewModel.bookTitle;
             flowDocumentReader.Document = flowBookViewModel.flowDocument;
-            this.DataContext = flowBookViewModel;
+            DataContext = flowBookViewModel;
 
             // Invokes
             flowBookViewModel.ScrollToAnchor += ScrollToAnchor;
-
-            // Timer
-            if (seconds > 0)
-            {
-                dispatcherTimer = new DispatcherTimer();
-                dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
-                dispatcherTimer.Tick += timer_Tick;
-                dispatcherTimer.Start();
-            } else
-            {
-                TimerText.Text = "Timer: disabled";
-            }
         }
 
         void ScrollToAnchor(Paragraph p)
         {
             p.BringIntoView();
-        }
-
-        void timer_Tick(object sender, EventArgs e)
-        {
-            counter++;
-            if (counter >= seconds)
-            {
-                MessageBox.Show("Time ended!", "Timer");
-                dispatcherTimer.Stop();
-            }
-            TimeSpan timer = TimeSpan.FromSeconds(seconds);
-            TimeSpan timeSpan = TimeSpan.FromSeconds(counter);
-            TimerText.Text = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
         }
     }
 }

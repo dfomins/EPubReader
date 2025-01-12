@@ -99,7 +99,7 @@ namespace EPubReader.ViewModel
         }
 
         // Open book command
-        public void OpenBook(Book selectedBook, int selectedReader, int timer)
+        public void OpenBook(Book selectedBook, int selectedReader, int timerMinutes, bool showTimer)
         {
             if (File.Exists(selectedBook.Path))
             {
@@ -107,12 +107,12 @@ namespace EPubReader.ViewModel
                 {
                     if (selectedReader == 0)
                     {
-                        FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path, timer);
+                        FlowBookWindow bookWindow = new FlowBookWindow(selectedBook.Path, timerMinutes, showTimer);
                         bookWindow.ShowDialog();
                     }
                     else if (selectedReader == 1)
                     {
-                        RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path, timer);
+                        RichTextBoxBookWindow richTextBoxBookWindow = new RichTextBoxBookWindow(selectedBook.Path, timerMinutes, showTimer);
                         richTextBoxBookWindow.ShowDialog();
                     }
                 }

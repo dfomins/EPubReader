@@ -2,8 +2,6 @@
 using EPubReader.Core;
 using EPubReader.ViewModel;
 using EPubReader.Views;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,6 +16,12 @@ namespace EPubReader.ViewModels
         public string bookTitle { get; }
         public FlowDocument flowDocument { get; }
         private int themeColor { get; set; }
+        private string _timerText;
+        public string timerText
+        {
+            get { return _timerText; }
+            set { _timerText = value; OnPropertyChanged(nameof(timerText)); }
+        }
 
         // Commands
         public ICommand OptionsCommand { get; }
@@ -40,12 +44,22 @@ namespace EPubReader.ViewModels
             set { _textColor = value; OnPropertyChanged(nameof(TextColor)); }
         }
 
-        public FReaderBookViewModel(string bookPath)
+        public FReaderBookViewModel(string bookPath, int timerMinutes, bool showTimer)
         {
-            bookViewModel = new BaseBookViewModel(bookPath);
+            bookViewModel = new BaseBookViewModel(bookPath, timerMinutes, showTimer);
             bookChapters = bookViewModel.bookChapters;
             bookTitle = bookViewModel.bookTitle;
             flowDocument = bookViewModel.flowDocument;
+
+            // Timer
+            bookViewModel.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(bookViewModel.timerText))
+                {
+                    timerText = bookViewModel.timerText;
+                }
+            };
+            timerText = bookViewModel.timerText;
 
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             ChaptersCommand = new RelayCommand(OpenChaptersWindow, CanOpenChaptersWindow);
@@ -90,8 +104,6 @@ namespace EPubReader.ViewModels
             return true;
         }
 
-        //public event Action<int> ColorTheme;
-
         /// <summary>
         /// Opens options window with font family settings
         /// </summary>
@@ -121,8 +133,8 @@ namespace EPubReader.ViewModels
         {
             foreach (EpubLocalTextContentFile chapter in bookViewModel.book.ReadingOrder)
             {
-                bookViewModel.document.LoadHtml(chapter.Content);
-                flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Key));
+                //bookViewModel.document.LoadHtml(chapter.Content);
+                flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Content, chapter.Key));
             }
         }
     }

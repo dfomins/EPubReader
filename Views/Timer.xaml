@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -64,6 +65,7 @@
                 <ComboBoxItem>55</ComboBoxItem>
             </ComboBox>
         </StackPanel>
+        <CheckBox Grid.Row="1" Name="showTimeOnScreenCheckbox" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand">Show timer on screen</CheckBox>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Save" Style="{StaticResource RoundButton}" Width="70" Margin="5 5 10 5" Cursor="Hand" Click="Apply_Click"/>
             <Button Content="Close" Style="{StaticResource RoundButton}" Width="70" Margin="0 5 5 5" Cursor="Hand" Click="Close_Click"/>

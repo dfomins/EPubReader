@@ -10,11 +10,10 @@ namespace EPubReader.Views
 {
     public partial class AllBooks : Window
     {
-        AllBooksViewModel booksViewModel;
-        bool isBookMarksFilterEnabled { get; set; }
-
-        int hours { get; set; }
-        int minutes { get; set; }
+        private AllBooksViewModel booksViewModel;
+        private bool isBookMarksFilterEnabled { get; set; }
+        private int timerMinutes { get; set; }
+        private bool showTimer { get; set; }
 
         public AllBooks()
         {
@@ -22,7 +21,6 @@ namespace EPubReader.Views
             booksViewModel = new AllBooksViewModel();
             booksListBox.ItemsSource = booksViewModel.books;
             DataContext = booksViewModel;
-            hours = minutes = 0;
         }
 
         private void DeleteBook_Click(object sender, RoutedEventArgs e)
@@ -35,28 +33,28 @@ namespace EPubReader.Views
         private void Label_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Book selectedBook = (Book)booksListBox.SelectedItem;
-            int timer = 0;
 
-            if (Timer_Checked.IsChecked == true)
-                timer = hours * 3600 + minutes * 60;
+            var minutes = timerMinutes;
+            if (Timer_Checked.IsChecked != true)
+                minutes = 0;
 
             if (ReaderSelectBtn_1.IsChecked == true)
             {
-                booksViewModel.OpenBook(selectedBook, 0, timer);
+                booksViewModel.OpenBook(selectedBook, 0, minutes, showTimer);
             }
             else if (ReaderSelectBtn_2.IsChecked == true)
             {
-                booksViewModel.OpenBook(selectedBook, 1, timer);
+                booksViewModel.OpenBook(selectedBook, 1, minutes, showTimer);
             }
         }
 
         private void TimerMenu_Click(object sender, RoutedEventArgs e)
         {
-            Timer timerWindow = new Timer(hours, minutes);
+            Timer timerWindow = new Timer(timerMinutes, showTimer);
             if (timerWindow.ShowDialog() == true)
             {
-                hours = timerWindow.hours;
-                minutes = timerWindow.minutes;
+                timerMinutes = timerWindow.timerMinutes;
+                showTimer = timerWindow.showTimer;
             }
         }
 

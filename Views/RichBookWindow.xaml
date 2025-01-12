@@ -41,7 +41,7 @@
                                 </Style>
                             </Button.Resources>
                         </Button>
-                        <TextBlock x:Name="TimerText" Foreground="{Binding TextColor}" VerticalAlignment="Center" TextAlignment="Center" Width="150" />
+                        <TextBlock x:Name="TimerText" Text="{Binding timerText}" Foreground="{Binding TextColor}" VerticalAlignment="Center" TextAlignment="Center" Width="150" />
                         <Button DockPanel.Dock="Left" Content="Next" Padding="30 10" Margin="15 10" Cursor="Hand" Background="White" Command="{Binding NextPageCommand}">
                             <Button.Resources>
                                 <Style TargetType="{x:Type Border}">

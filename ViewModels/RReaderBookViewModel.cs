@@ -20,6 +20,7 @@ namespace EPubReader.ViewModels
         public string bookTitle { get; }
         public int chaptersCount { get; }
         private Section[] sections { get; }
+
         private int _currentSectionIndex = 0;
         public int currentSectionIndex
         {
@@ -33,7 +34,16 @@ namespace EPubReader.ViewModels
                 (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
+
         public FlowDocument flowDocument { get; }
+
+        private string _timerText;
+        public string timerText
+        {
+            get { return _timerText; }
+            set { _timerText = value; OnPropertyChanged(nameof(timerText)); }
+        }
+
         private int fontSize { get; set; } = 18;
         private int themeColor { get; set; }
 
@@ -55,9 +65,9 @@ namespace EPubReader.ViewModels
             set { _textColor = value; OnPropertyChanged(nameof(TextColor)); }
         }
 
-        public RReaderBookViewModel(string BookPath)
+        public RReaderBookViewModel(string BookPath, int seconds, bool showTimer)
         {
-            bookViewModel = new BaseBookViewModel(BookPath);
+            bookViewModel = new BaseBookViewModel(BookPath, seconds, showTimer);
             bookTitle = bookViewModel.bookTitle;
             bookChapters = bookViewModel.bookChapters;
             readingOrder = bookViewModel.book.ReadingOrder;
@@ -68,6 +78,16 @@ namespace EPubReader.ViewModels
             NextPageCommand = new RelayCommand(NextPage, CanOpenNextPage);
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             TextColor = Brushes.Black;
+
+            // Timer
+            bookViewModel.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == nameof(bookViewModel.timerText))
+                {
+                    timerText = bookViewModel.timerText;
+                }
+            };
+            timerText = bookViewModel.timerText;
 
             SetSectionsTags();
 
@@ -148,8 +168,8 @@ namespace EPubReader.ViewModels
         private void RenderSection()
         {
             ClearRichTextBoxIfNotEmpty();
-            bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
-            sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Key, fontSize);
+            //bookViewModel.document.LoadHtml(readingOrder[currentSectionIndex].Content);
+            sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Content, readingOrder[currentSectionIndex].Key, fontSize);
             flowDocument.Blocks.Add(sections[currentSectionIndex]);
 
         }
