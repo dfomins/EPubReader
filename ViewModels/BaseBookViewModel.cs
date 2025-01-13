@@ -30,7 +30,7 @@ namespace EPubReader.ViewModel
             get { return _timerText; }
             set { _timerText = value; OnPropertyChanged(nameof(timerText)); }
         }
-        private bool showTimer { get; }
+        private bool showTimer { get; set; }
 
         public BaseBookViewModel(string bookPath, int timerMinutes, bool showTimer)
         {
@@ -45,6 +45,11 @@ namespace EPubReader.ViewModel
             this.timerMinutes = timerMinutes;
             this.showTimer = showTimer;
 
+            Timer();
+        }
+
+        private void Timer()
+        {
             if (timerMinutes > 0)
             {
                 dispatcherTimer = new DispatcherTimer();
@@ -62,8 +67,23 @@ namespace EPubReader.ViewModel
             {
                 dispatcherTimer.Stop();
                 UpdateTimerText();
-                MessageBox.Show("Time ended!", "Timer");
-                return;
+                MessageBoxResult result = MessageBox.Show("Time ended! Want to extend reading time?", "Timer ended", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.OK)
+                {
+                    EPubReader.Views.Timer timerWindow = new EPubReader.Views.Timer(timerMinutes, showTimer);
+                    if (timerWindow.ShowDialog() == true)
+                    {
+                        counter = 0;
+                        timerMinutes = timerWindow.timerMinutes;
+                        showTimer = timerWindow.showTimer;
+                        Timer();
+                    }
+                } else
+                {
+                    showTimer = false;
+                    UpdateTimerText();
+                    return;
+                }
             }
             UpdateTimerText();
         }
@@ -75,7 +95,34 @@ namespace EPubReader.ViewModel
                 TimeSpan timer = TimeSpan.FromMinutes(timerMinutes);
                 TimeSpan timeSpan = TimeSpan.FromMinutes(counter);
                 timerText = "Timer: " + timeSpan.ToString(@"hh\:mm") + "/" + timer.ToString(@"hh\:mm");
+            } else
+            {
+                timerText = "";
             }
+        }
+
+        public Section CreateCover()
+        {
+            Section section = new Section();
+
+            BitmapImage bitmapImage = CreateBitmapFromBytes(book.CoverImage);
+
+            Image image = new Image()
+            {
+                Source = bitmapImage,
+                MaxHeight = 1000,
+                Margin = new Thickness(0, 0, 0, 40)
+            };
+
+            Paragraph paragraph = new Paragraph()
+            {
+                TextAlignment = TextAlignment.Center,
+            };
+
+            paragraph.Inlines.Add(new InlineUIContainer(image));
+            section.Blocks.Add(paragraph);
+
+            return section;
         }
 
         /// <summary>
@@ -189,8 +236,7 @@ namespace EPubReader.ViewModel
                             if (fileName == book.Content?.Cover?.Key)
                             {
                                 image.MaxHeight = 1000;
-                                Thickness thicc = new Thickness(0, 0, 0, 40);
-                                image.Margin = thicc;
+                                image.Margin = new Thickness(0, 0, 0, 40);
                             }
 
                             else

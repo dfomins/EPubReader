@@ -30,11 +30,11 @@ namespace EPubReader.Views
             bookChaptersListBox.ItemsSource = bookChapters;
         }
 
-        public void ChapterLabel_Click(object sender, EventArgs e)
+        private void ChapterLabel_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Label label)
+            if (sender is ContentControl control)
             {
-                var chapter = label.DataContext as EpubNavigationItem;
+                var chapter = control.DataContext as EpubNavigationItem;
                 if (chapter != null && chapter.Link != null)
                 {
                     anchor = chapter.Link.ContentFileUrl;

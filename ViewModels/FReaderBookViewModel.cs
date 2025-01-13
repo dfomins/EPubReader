@@ -63,7 +63,6 @@ namespace EPubReader.ViewModels
 
             OptionsCommand = new RelayCommand(OpenOptionsWindow, CanOpenOptionsWindow);
             ChaptersCommand = new RelayCommand(OpenChaptersWindow, CanOpenChaptersWindow);
-
             TextColor = Brushes.Black;
 
             LoadBookContent();
@@ -131,9 +130,13 @@ namespace EPubReader.ViewModels
 
         private void LoadBookContent()
         {
+            flowDocument.Blocks.Add(bookViewModel.CreateCover());
+
             foreach (EpubLocalTextContentFile chapter in bookViewModel.book.ReadingOrder)
             {
-                flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Content, chapter.Key));
+                Section section = bookViewModel.CreateSection(chapter.Content, chapter.Key);
+                if (section.Blocks.Count > 0)
+                    flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Content, chapter.Key));
             }
         }
     }

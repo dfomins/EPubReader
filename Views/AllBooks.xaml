@@ -52,22 +52,24 @@
                     <Button Grid.Column="2" Style="{StaticResource RoundButton}" Content="Clear" Margin="0 5 5 5" Padding="5" Cursor="Hand" Click="ClearButton_Click" />
                     <ToggleButton x:Name="BookmarksButton" Grid.Column="3" Style="{StaticResource RoundToggleButton}" Checked="EnableBookmarksButton_Click" Unchecked="DisableBookmarksButton_Click" Content="Favorites" Width="70" HorizontalAlignment="Right" Margin="5"></ToggleButton>
                 </Grid>
-                <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch" Background="{StaticResource Main}" BorderThickness="0">
+                <ListBox Grid.Row="2" Name="booksListBox" SelectedItem="{Binding selectedBook, Mode=TwoWay}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ScrollViewer.CanContentScroll="True" Background="{StaticResource Main}" BorderThickness="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal"> 
-                                <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="Label_DoubleClick">
-                                    <Label.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Add/remove favorite" Click="AddOrRemoveToFavorite_Click" />
-                                            <MenuItem Header="Delete book" Click="DeleteBook_Click" />
-                                        </ContextMenu>
-                                    </Label.ContextMenu>
-                                </Label>
-                                <Viewbox VerticalAlignment="Center" IsHitTestVisible="False" Width="10" Visibility="{Binding IsFavorite, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Path Data="{StaticResource BookmarkIcon}" Fill="Black"/>
-                                </Viewbox>
-                            </StackPanel>
+                            <ContentControl MouseDoubleClick="Label_DoubleClick" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal" Background="Transparent">
+                                    <Label Height="40" VerticalContentAlignment="Center" FontSize="16" Content="{Binding Title}">
+                                        <Label.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Add/remove favorite" Click="AddOrRemoveToFavorite_Click" />
+                                                <MenuItem Header="Delete book" Click="DeleteBook_Click" />
+                                            </ContextMenu>
+                                        </Label.ContextMenu>
+                                    </Label>
+                                    <Viewbox IsHitTestVisible="False" Width="10" Visibility="{Binding IsFavorite, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Path Data="{StaticResource BookmarkIcon}" Fill="Black" IsHitTestVisible="False"/>
+                                    </Viewbox>
+                                </StackPanel>
+                            </ContentControl>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

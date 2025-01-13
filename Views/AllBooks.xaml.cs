@@ -1,10 +1,6 @@
 ﻿using EPubReader.Models;
 using EPubReader.ViewModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 
 namespace EPubReader.Views
 {
@@ -102,6 +98,5 @@ namespace EPubReader.Views
             isBookMarksFilterEnabled = false;
             booksViewModel.BooksCount();
         }
-
     }
 }
