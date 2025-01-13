@@ -1,5 +1,6 @@
 ﻿using EPubReader.Commands;
 using EPubReader.Core;
+using EPubReader.Models;
 using EPubReader.ViewModel;
 using EPubReader.Views;
 using System.Windows.Documents;
@@ -13,7 +14,7 @@ namespace EPubReader.ViewModels
     {
         private BaseBookViewModel bookViewModel { get; }
         private List<EpubLocalTextContentFile> readingOrder { get; }
-        public List<EpubNavigationItem> bookChapters { get; }
+        public List<Chapter> bookChapters { get; }
         public string bookTitle { get; }
         public int chaptersCount { get; }
         private Section[] sections { get; }
@@ -164,8 +165,14 @@ namespace EPubReader.ViewModels
         private void RenderSection()
         {
             ClearRichTextBoxIfNotEmpty();
-            sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Content, readingOrder[currentSectionIndex].Key, fontSize);
-            flowDocument.Blocks.Add(sections[currentSectionIndex]);
+            if (currentSectionIndex == 0)
+            {
+                flowDocument.Blocks.Add(bookViewModel.CreateCover());
+            } else
+            {
+                sections[currentSectionIndex] = bookViewModel.CreateSection(readingOrder[currentSectionIndex].Content, readingOrder[currentSectionIndex].Key, fontSize);
+                flowDocument.Blocks.Add(sections[currentSectionIndex]);
+            }
         }
 
         private void ChangeSection(int direction)

@@ -1,5 +1,6 @@
 ﻿using EPubReader.Commands;
 using EPubReader.Core;
+using EPubReader.Models;
 using EPubReader.ViewModel;
 using EPubReader.Views;
 using System.Windows.Documents;
@@ -12,7 +13,7 @@ namespace EPubReader.ViewModels
     public class FReaderBookViewModel : ObservableObject
     {
         private BaseBookViewModel bookViewModel { get; }
-        public List<EpubNavigationItem> bookChapters { get; }
+        public List<Chapter> bookChapters { get; }
         public string bookTitle { get; }
         public FlowDocument flowDocument { get; }
         private int themeColor { get; set; }
@@ -130,13 +131,19 @@ namespace EPubReader.ViewModels
 
         private void LoadBookContent()
         {
-            flowDocument.Blocks.Add(bookViewModel.CreateCover());
+            List<EpubLocalTextContentFile> chapters = bookViewModel.book.ReadingOrder;
 
-            foreach (EpubLocalTextContentFile chapter in bookViewModel.book.ReadingOrder)
+            for (int i = 0; i < chapters.Count; i++)
             {
-                Section section = bookViewModel.CreateSection(chapter.Content, chapter.Key);
-                if (section.Blocks.Count > 0)
-                    flowDocument.Blocks.Add(bookViewModel.CreateSection(chapter.Content, chapter.Key));
+                if (i == 0)
+                {
+                    flowDocument.Blocks.Add(bookViewModel.CreateCover());
+                } else
+                {
+                    Section section = bookViewModel.CreateSection(chapters[i].Content, chapters[i].Key);
+                    if (section.Blocks.Count > 0)
+                        flowDocument.Blocks.Add(bookViewModel.CreateSection(chapters[i].Content, chapters[i].Key));
+                }
             }
         }
     }

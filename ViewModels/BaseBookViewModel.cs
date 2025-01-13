@@ -8,18 +8,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using VersOne.Epub;
 using System.Web;
+using EPubReader.Models;
 
 namespace EPubReader.ViewModel
 {
     public class BaseBookViewModel : ObservableObject
     {
         public EpubBook book { get; }
-        public List<EpubNavigationItem> bookChapters { get; }
+        public List<Chapter> bookChapters { get; }
         public string bookTitle { get; }
         private ICollection<EpubLocalByteContentFile> images { get; }
         public FlowDocument flowDocument { get; } = new FlowDocument();
 
-        // Timer test
+        // Timer
         private DispatcherTimer dispatcherTimer;
         private int counter { get; set; }
         private int timerMinutes { get; set; }
@@ -35,9 +36,23 @@ namespace EPubReader.ViewModel
         public BaseBookViewModel(string bookPath, int timerMinutes, bool showTimer)
         {
             book = EpubReader.ReadBook(bookPath);
+            List<Chapter> chapters = new List<Chapter>();
             if (book.Navigation != null)
             {
-                bookChapters = book.Navigation.ToList();
+                foreach (EpubNavigationItem chapter in book.Navigation)
+                {
+                    Chapter cpt = new Chapter(chapter.Title, chapter.Link.ContentFileUrl);
+                    chapters.Add(cpt);
+                    if (chapter.NestedItems.Count > 0)
+                    {
+                        foreach (EpubNavigationItem subChapter in chapter.NestedItems)
+                        {
+                            Chapter cpt2 = new Chapter(subChapter.Title, subChapter.Link.ContentFileUrl);
+                            cpt.SubChapter.Add(cpt2);
+                        }
+                    }
+                }
+                bookChapters = chapters;
             }
             bookTitle = book.Title;
             images = book.Content.Images.Local;

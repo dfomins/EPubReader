@@ -1,18 +1,7 @@
-﻿using EPubReader.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EPubReader.Models;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using VersOne.Epub;
 
 namespace EPubReader.Views
 {
@@ -23,7 +12,7 @@ namespace EPubReader.Views
     {
         public string anchor { get; set; } = string.Empty;
 
-        public ChaptersWindow(List<EpubNavigationItem> bookChapters, string bookTitle)
+        public ChaptersWindow(List<Chapter> bookChapters, string bookTitle)
         {
             InitializeComponent();
             chaptersWindow.Title = bookTitle + " - Chapters";
@@ -34,10 +23,10 @@ namespace EPubReader.Views
         {
             if (sender is ContentControl control)
             {
-                var chapter = control.DataContext as EpubNavigationItem;
-                if (chapter != null && chapter.Link != null)
+                var chapter = control.DataContext as Chapter;
+                if (chapter != null && chapter.Key != null)
                 {
-                    anchor = chapter.Link.ContentFileUrl;
+                    anchor = chapter.Key;
                     DialogResult = true;
                     Close();
                 }

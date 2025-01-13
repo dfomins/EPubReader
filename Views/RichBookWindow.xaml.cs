@@ -1,4 +1,5 @@
-﻿using EPubReader.ViewModels;
+﻿using EPubReader.Models;
+using EPubReader.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +22,7 @@ namespace EPubReader.Views
             DataContext = richBookViewModel;
             richBookWindow.Title = richBookViewModel.bookTitle;
             richTextBox.Document = richBookViewModel.flowDocument;
-            bookChaptersListBox.ItemsSource = richBookViewModel.bookChapters;
+            bookChaptersTreeView.ItemsSource = richBookViewModel.bookChapters;
 
             // Invokes
             richBookViewModel.ClearRichTextBox += ClearRichTextBoxIfNotEmpty;
@@ -40,8 +41,8 @@ namespace EPubReader.Views
         {
             if (sender is ContentControl control)
             {
-                var chapter = control.DataContext as EpubNavigationItem;
-                var anchor = chapter.Link.ContentFileUrl;
+                var chapter = control.DataContext as Chapter;
+                var anchor = chapter.Key;
                 richBookViewModel.RenderSectionByAnchor(anchor);
             }
         }

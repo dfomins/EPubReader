@@ -19,18 +19,13 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
             <Border BorderThickness="0 0 1 0" BorderBrush="Gray">
-                <ListBox x:Name="bookChaptersListBox" HorizontalContentAlignment="Stretch">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl MouseDoubleClick="ChapterLabel_Click" Cursor="Hand">
-                                <DockPanel>
-                                    <Label Content="10" DockPanel.Dock="Right" />
-                                    <Label Content="{Binding Title}" />
-                                </DockPanel>
-                            </ContentControl>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <TreeView Name="bookChaptersTreeView" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding SubChapter}">
+                            <Label Content="{Binding Title}" Cursor="Hand" MouseDoubleClick="ChapterLabel_Click" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </Border>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
