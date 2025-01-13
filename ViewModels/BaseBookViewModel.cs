@@ -82,7 +82,7 @@ namespace EPubReader.ViewModel
             {
                 dispatcherTimer.Stop();
                 UpdateTimerText();
-                MessageBoxResult result = MessageBox.Show("Time ended! Want to extend reading time?", "Timer ended", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult result = MessageBox.Show("Time ended! Want to set new timer?", "Timer ended", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.OK)
                 {
                     EPubReader.Views.Timer timerWindow = new EPubReader.Views.Timer(timerMinutes, showTimer);
